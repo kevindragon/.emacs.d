@@ -6,8 +6,24 @@
 (setq user-mail-address "kittymiky@gmail.com")
 
 
+;;; 设置界面
 ;; 关闭启动画面
 (setq inhibit-startup-message t)
+;; 关闭滚动条
+(scroll-bar-mode -1)
+;; 去掉工具栏
+(tool-bar-mode 0)
+;; 显示时间，格式如下
+(display-time-mode 1)
+(setq display-time-24hr-format t)
+(setq display-time-day-and-date t)
+(transient-mark-mode t)
+;; 在status bar显示行号和列号
+(line-number-mode)
+(column-number-mode)
+;; 显示行列号
+(global-linum-mode t)
+
 
 ;; 在标题栏提示你目前在什么位置
 (defun frame-title-string ()
@@ -24,22 +40,6 @@
                       (substring fname (- (length fname) max-len)))))
     fname))
 (setq frame-title-format '("Kevin@"(:eval (frame-title-string))))
-
-;; 去掉工具栏
-(tool-bar-mode 0)
-
-;; 显示时间，格式如下
-(display-time-mode 1)
-(setq display-time-24hr-format t)
-(setq display-time-day-and-date t)
-(transient-mark-mode t)
-
-;; 在status bar显示行号和列号
-(line-number-mode)
-(column-number-mode)
-
-;; 显示行列号
-(global-linum-mode t)
 
 ;; 高亮当前行
 (global-hl-line-mode t)
@@ -74,7 +74,7 @@
 
 
 ;;; 设置load-path
-(add-to-list 'load-path "~/.emacs.d/lisp/")
+(add-to-list 'load-path "~/.emacs.d/lisp")
 
 
 ;;; install packages
@@ -88,7 +88,8 @@
 	auto-complete
 	yasnippet
 	company
-	magit))
+	magit
+	vi-tilde-fringe))
 
 (unless package-archive-contents
   (package-refresh-contents))
@@ -120,4 +121,11 @@
 (add-hook 'after-init-hook 'global-company-mode)
 
 
+;;; fringe的位置使用vi的波浪符号
+(global-vi-tilde-fringe-mode 1)
+
+
+;;; 加载自定义快捷键
 (load "my-key-bindings")
+
+
