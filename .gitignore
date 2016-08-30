@@ -1,1 +1,6 @@
-/.emacs.desktop
+.emacs.desktop*
+*.dat
+auto-save-list
+elpa
+*~
+server
