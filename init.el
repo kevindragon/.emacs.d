@@ -41,14 +41,21 @@
     fname))
 (setq frame-title-format '("Kevin@"(:eval (frame-title-string))))
 
-;; 高亮当前行
+;;; 高亮当前行
 (global-hl-line-mode t)
 
-;; 当emacs退出时保存打开的文件
-(desktop-save-mode 1)
-(setq-default desktop-load-locked-desktop t)
-(desktop-load-default)
-(desktop-read)
+;;; 当emacs退出时保存打开的文件
+;;(desktop-save-mode 1)
+;;(setq-default desktop-load-locked-desktop t)
+;;(desktop-load-default)
+;;(desktop-read)
+
+;;;
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 100)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+(run-at-time nil (* 10 60) 'recentf-save-list)
 
 ;; 记住上次文件打开的位置
 (setq-default save-place t)
@@ -89,7 +96,12 @@
 	yasnippet
 	company
 	magit
-	vi-tilde-fringe))
+	vi-tilde-fringe
+	cider
+	inf-clojure
+	scala-mode
+	evil
+	which-key))
 
 (unless package-archive-contents
   (package-refresh-contents))
@@ -129,3 +141,13 @@
 (load "my-key-bindings")
 
 
+;;; evil mode
+;(require 'evil)
+(evil-mode 1)
+(add-hook 'evil-emacs-state-entry-hook
+	  '(lambda()
+	     (setq cursor-type 'bar)))
+
+;;; which key
+;(require 'which-key)
+(which-key-mode)
