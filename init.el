@@ -1,31 +1,17 @@
-;; author: Kevin.Jiang
-;; E-mail: kittymiky@gmail.com
+;;; init Emacs
+;; author: Kevin Jiang
+;; E-mail: wenlin1988@126.com
 
-;; 设置我的个人信息
-(setq user-full-name "Kevin Jiang")
-(setq user-mail-address "kittymiky@gmail.com")
-
-
-;;; 设置界面
-;; 关闭启动画面
 (setq inhibit-startup-message t)
-;; 关闭滚动条
-(scroll-bar-mode -1)
-;; 去掉工具栏
-(tool-bar-mode 0)
-;; 显示时间，格式如下
-(display-time-mode 1)
-(setq display-time-24hr-format t)
-(setq display-time-day-and-date t)
-(transient-mark-mode t)
-;; 在status bar显示行号和列号
-(line-number-mode)
-(column-number-mode)
-;; 显示行列号
-(global-linum-mode t)
 
+;; setup my info
+(setq user-full-name "Kevin Jiang")
+(setq user-mail-address "wenlin1988@126.com")
 
-;; 在标题栏提示你目前在什么位置
+;; set load path
+(add-to-list 'load-path "~/.emacs.d/lisp")
+
+;; set location on frame title
 (defun frame-title-string ()
   "Return the file name of current buffer, using ~ if under home directory"
   (let ((fname (or
@@ -41,113 +27,149 @@
     fname))
 (setq frame-title-format '("Kevin@"(:eval (frame-title-string))))
 
-;;; 高亮当前行
-(global-hl-line-mode t)
+;; set font
+(when (member "Courier New" (font-family-list))
+  (set-face-attribute 'default nil :font "Courier New"))
 
-;;; 当emacs退出时保存打开的文件
-;;(desktop-save-mode 1)
-;;(setq-default desktop-load-locked-desktop t)
-;;(desktop-load-default)
-;;(desktop-read)
+;; set ckj font windows下有中文的内容很慢，用下面完美解决
+(dolist (charset '(kana han cjk-misc bopomofo))
+  (set-fontset-font (frame-parameter nil 'font) charset
+                    (font-spec :family "微软雅黑" :size 12)))
 
-;;;
-(require 'recentf)
-(recentf-mode 1)
-(setq recentf-max-menu-items 100)
-(global-set-key "\C-x\ \C-r" 'recentf-open-files)
-(run-at-time nil (* 10 60) 'recentf-save-list)
+;; coding system
+(prefer-coding-system 'utf-8)
 
-;; 记住上次文件打开的位置
-(setq-default save-place t)
+;; no toolbar
+(tool-bar-mode 0)
+;; disable scroll bar
+(scroll-bar-mode 0)
 
-;; 当emacs退出时保存文件打开状态
-(add-hook 'kill-emacs-hook
-	  '(lambda()
-	     (desktop-save "~/.emacs.d")))
+(display-time-mode 1)
+(setq display-time-24hr-format t)
+(setq display-time-day-and-date t)
+;;(transient-mark-mode t)
 
-;; 不产生备份文件
+;; stop creating backup~ files
 (setq make-backup-files nil)
+;; stop creating #autosave# files
+(setq auto-save-default nil)
+;; backup in one place. flat, no tree structure
+;;(setq backup-directory-alist '(("" . "~/.emacs.d/emacs-backup")))
+;; make backup to a designated dir, mirroring the full path
+(defun my-backup-file-name (fpath)
+  "Return a new file path of a given file path.
+If the new path's directories does not exist, create them."
+  (let* ((backupRootDir "~/.emacs.d/emacs-backup/")
+         ;; remove Windows driver letter in path, for example: “C:”
+         (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath )) 
+         (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") )))
+    (make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
+    backupFilePath))
+(setq make-backup-file-name-function 'my-backup-file-name)
 
-;; 以 y/n 代表 yes/no
-(fset 'yes-or-no-p 'y-or-n-p)
+;; remember cursor position, for emacs 25.1 or later
+(save-place-mode 1)
 
-;; 显示括号匹配,但不跳转到另外一个括号的位置
-(show-paren-mode t)
-;; 开启括号自动补全
-(electric-pair-mode t)
-
-;; 把kill-ring设置大一些
+;; set high kill ring
 (setq-default kill-ring-max 100000)
 
+;; tab size
+(setq default-tab-width 4)
+(setq-default indent-tabs-mode nil)
 
-;;; 设置load-path
-(add-to-list 'load-path "~/.emacs.d/lisp")
+;; Toggle visualization of matching parens
+(show-paren-mode t)
+;; Toggle automatic parens pairing
+(electric-pair-mode t)
 
+(setq x-select-enable-clipboard t)
+(global-linum-mode 1)
+(line-number-mode)
+(column-number-mode)
 
-;;; install packages
+;; replace yes no to y/n
+(fset 'yes-or-no-p 'y-or-n-p)
+
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
 
-(setq package-list
-      '(helm
-	auto-complete
-	yasnippet
-	company
-        magit
-	vi-tilde-fringe
-	cider
-	inf-clojure
-	scala-mode
-	evil
-	which-key))
+;;; package
+(defun install-packages ()
+  (interactive)
+  (setq package-list
+        '(s
+          seq
+          popup
+          queue
+          dash
+          company
+          yasnippet
+          scala-mode
+          sbt-mode
+          ensime
+          which-key
+          clojure-mode
+          inf-clojure
+          cider
+          ivy
+          swiper
+          markdown-mode
+          magit
+          web-mode
+          js2-mode
+          undo-tree
+          evil
+          ;;evil-leader
+          json-mode))
 
-(unless package-archive-contents
-  (package-refresh-contents))
+  ;; fetch the list of packages available 
+  (unless package-archive-contents
+    (package-refresh-contents))
 
-(dolist (pkg package-list)
-  (unless (package-installed-p pkg)
-    (package-install pkg)))
-
-
-;;; helm
-(require 'helm-config)
-(helm-mode 1)
-
-
-;;; auto complete
-(ac-config-default)
-(setq ac-sources
-      '(ac-source-filename
-	ac-source-functions
-	ac-source-yasnippet
-	ac-source-variables
-	ac-source-symbols
-	ac-source-features
-	ac-source-abbrev
-	ac-source-words-in-same-mode-buffers
-	ac-source-dictionary))
-(global-auto-complete-mode t)
-(yas-global-mode 1)
-(add-hook 'after-init-hook 'global-company-mode)
+  ;; install the missing package-list
+  (dolist (package package-list)
+    (unless (package-installed-p package)
+      (package-install package))))
 
 
-;;; fringe的位置使用vi的波浪符号
-(global-vi-tilde-fringe-mode 1)
+(yas-global-mode t)
+(yas-minor-mode-on)
+(global-company-mode 1)
 
+;; keep a list of recently opened files
+(recentf-mode 1)
+;; set F7 to list recently opened file
+(global-set-key (kbd "<f7>") 'recentf-open-files)
 
-;;; 加载自定义快捷键
-(load "my-key-bindings")
+;; make ibuffer default
+(defalias 'list-buffers 'ibuffer)
 
+(setq custom-file "~/.emacs.d/.emacs-custom.el")
+(load custom-file)
 
-;;; evil mode
-;(require 'evil)
-(evil-mode 1)
-(add-hook 'evil-emacs-state-entry-hook
-	  '(lambda()
-	     (setq cursor-type 'bar)))
+;; use ivy
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(global-set-key "\C-s" 'swiper)
 
-;;; which key
-;(require 'which-key)
-(which-key-mode)
+;; clojure
+(when (package-installed-p 'clojure-mode)
+  (setq cider-repl-display-help-banner nil))
+
+;; evil
+;;(when (package-installed-p 'evil)
+;;  (evil-mode 1))
+
+(when (package-installed-p 'web-mode)
+  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2))
