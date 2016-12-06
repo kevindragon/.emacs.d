@@ -11,6 +11,9 @@
 ;; set load path
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
+;; load key bindings myself
+(load "keybindings.el")
+
 ;; set location on frame title
 (defun frame-title-string ()
   "Return the file name of current buffer, using ~ if under home directory"
@@ -114,17 +117,26 @@ If the new path's directories does not exist, create them."
           inf-clojure
           cider
           ivy
+          ;;helm
+          ;;swiper-helm
           swiper
           markdown-mode
           magit
           web-mode
           js2-mode
           undo-tree
-          evil
+          ;;evil
           ;;evil-leader
-          json-mode))
+          json-mode
+          window-numbering
+          projectile
+          rainbow-delimiters
+          highlight-symbol
+          vimish-fold
+          origami
+          gnuplot-mode))
 
-  ;; fetch the list of packages available 
+  ;; fetch the list of packages available
   (unless package-archive-contents
     (package-refresh-contents))
 
@@ -133,10 +145,14 @@ If the new path's directories does not exist, create them."
     (unless (package-installed-p package)
       (package-install package))))
 
+;; setup yasnippet
+(when (package-installed-p 'yasnippet)
+  (yas-global-mode t)
+  (yas-minor-mode-on))
 
-(yas-global-mode t)
-(yas-minor-mode-on)
-(global-company-mode 1)
+;; enable company mode
+(when (package-installed-p 'company)
+  (global-company-mode 1))
 
 ;; keep a list of recently opened files
 (recentf-mode 1)
@@ -150,13 +166,26 @@ If the new path's directories does not exist, create them."
 (load custom-file)
 
 ;; use ivy
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(global-set-key "\C-s" 'swiper)
+(if (package-installed-p 'ivy)
+    (progn
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (global-set-key "\C-s" 'swiper))
+  (when (package-installed-p 'helm)
+    (progn
+      (require 'helm-config)
+      (helm-mode 1)
+      (global-set-key (kbd "M-x") 'helm-M-x)
+      (global-set-key "\C-s" 'swiper))))
 
 ;; clojure
 (when (package-installed-p 'clojure-mode)
-  (setq cider-repl-display-help-banner nil))
+  (add-hook 'cider-repl-mode-hook
+            (lambda ()
+              (local-set-key (kbd "M-RET s c")
+                             'cider-repl-clear-buffer)))
+  (setq cider-repl-display-help-banner nil)
+  (setq cider-repl-use-pretty-printing t))
 
 ;; evil
 ;;(when (package-installed-p 'evil)
@@ -173,3 +202,27 @@ If the new path's directories does not exist, create them."
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 2))
+
+(when (package-installed-p 'window-numbering)
+  (window-numbering-mode))
+
+(when (package-installed-p 'rainbow-delimiters)
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+
+
+;; fold
+(when (package-installed-p 'vimish-fold)
+  (vimish-fold-global-mode 1))
+
+(when (package-installed-p 'origami)
+  (global-origami-mode)
+  (add-hook 'origami-mode-hook
+            (lambda ()
+              (local-set-key (kbd "C-c z o") 'origami-open-node)
+              (local-set-key (kbd "C-c z f") 'origami-close-node)
+              (local-set-key (kbd "C-c z a") 'origami-close-all-nodes)
+              (local-set-key (kbd "C-c z r") 'origami-open-all-nodes))))
+
+(when (package-installed-p 'which-key)
+  (which-key-mode))
+
