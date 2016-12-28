@@ -35,9 +35,10 @@
   (set-face-attribute 'default nil :font "Courier New"))
 
 ;; set ckj font windows下有中文的内容很慢，用下面完美解决
-(dolist (charset '(kana han cjk-misc bopomofo))
+(when (string-equal system-type "windows-nt")
+  (dolist (charset '(kana han cjk-misc bopomofo))
   (set-fontset-font (frame-parameter nil 'font) charset
-                    (font-spec :family "微软雅黑" :size 12)))
+                    (font-spec :family "微软雅黑" :size 12))))
 
 ;; coding system
 (prefer-coding-system 'utf-8)
@@ -102,11 +103,7 @@ If the new path's directories does not exist, create them."
 (defun install-packages ()
   (interactive)
   (setq package-list
-        '(s
-          seq
-          popup
-          queue
-          dash
+        '(better-defaults
           company
           yasnippet
           scala-mode
@@ -116,6 +113,11 @@ If the new path's directories does not exist, create them."
           clojure-mode
           inf-clojure
           cider
+          ;;parinfer
+          ;;paredit
+          elpy
+          py-autopep8
+          ein
           ivy
           ;;helm
           ;;swiper-helm
@@ -125,15 +127,14 @@ If the new path's directories does not exist, create them."
           web-mode
           js2-mode
           undo-tree
-          ;;evil
-          ;;evil-leader
           json-mode
+          aggressive-indent
           window-numbering
           projectile
           rainbow-delimiters
           highlight-symbol
-          vimish-fold
           origami
+          ranger
           gnuplot-mode))
 
   ;; fetch the list of packages available
@@ -184,15 +185,13 @@ If the new path's directories does not exist, create them."
             (lambda ()
               (local-set-key (kbd "M-RET s c")
                              'cider-repl-clear-buffer)))
+  (add-hook 'clojure-mode-hook #'aggressive-indent-mode)
   (setq cider-repl-display-help-banner nil)
   (setq cider-repl-use-pretty-printing t))
 
-;; evil
-;;(when (package-installed-p 'evil)
-;;  (evil-mode 1))
-
 (when (package-installed-p 'web-mode)
   (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
@@ -211,9 +210,6 @@ If the new path's directories does not exist, create them."
 
 
 ;; fold
-(when (package-installed-p 'vimish-fold)
-  (vimish-fold-global-mode 1))
-
 (when (package-installed-p 'origami)
   (global-origami-mode)
   (add-hook 'origami-mode-hook
@@ -225,4 +221,16 @@ If the new path's directories does not exist, create them."
 
 (when (package-installed-p 'which-key)
   (which-key-mode))
+
+
+;; org mode
+(setq org-startup-indented t)
+
+
+;; python
+(when (package-installed-p 'elpy)
+  (elpy-enable)
+  (elpy-use-ipython)
+  (when (package-installed-p 'py-autopep8)
+    (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)))
 
