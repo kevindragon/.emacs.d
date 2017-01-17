@@ -41,7 +41,14 @@
                     (font-spec :family "微软雅黑" :size 12))))
 
 ;; coding system
+(prefer-coding-system 'cp950)
+(prefer-coding-system 'gb2312)
+(prefer-coding-system 'cp936)
+(prefer-coding-system 'gb18030)
+(prefer-coding-system 'utf-16)
 (prefer-coding-system 'utf-8)
+(prefer-coding-system 'utf-8-dos)
+(prefer-coding-system 'utf-8-unix)
 
 ;; no toolbar
 (tool-bar-mode 0)
@@ -167,17 +174,11 @@ If the new path's directories does not exist, create them."
 (load custom-file)
 
 ;; use ivy
-(if (package-installed-p 'ivy)
-    (progn
-      (ivy-mode 1)
-      (setq ivy-use-virtual-buffers t)
-      (global-set-key "\C-s" 'swiper))
-  (when (package-installed-p 'helm)
-    (progn
-      (require 'helm-config)
-      (helm-mode 1)
-      (global-set-key (kbd "M-x") 'helm-M-x)
-      (global-set-key "\C-s" 'swiper))))
+(when (package-installed-p 'ivy)
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (when (package-installed-p 'swiper)
+    (global-set-key "\C-s" 'swiper)))
 
 ;; clojure
 (when (package-installed-p 'clojure-mode)
@@ -231,6 +232,22 @@ If the new path's directories does not exist, create them."
 (when (package-installed-p 'elpy)
   (elpy-enable)
   (elpy-use-ipython)
+  (add-hook 'inferior-python-mode-hook
+            (lambda ()
+              (local-set-key (kbd "C-c C-b C-c")
+                             (lambda ()
+                               (interactive)
+                               (let ((comint-buffer-maximum-size 0))
+                                 (comint-clear-buffer))))))
   (when (package-installed-p 'py-autopep8)
-    (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)))
-
+    (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
+  (when (string-equal system-type "windows-nt")
+    ;; 解决 Shell Mode(cmd) 下中文乱码问题
+    ;;(set-terminal-coding-system 'gbk)
+    ;;(modify-coding-system-alist 'process "*" 'gbk)
+    (defun kevin/windows-shell-mode-coding ()
+      (set-buffer-file-coding-system 'gbk)
+      (set-buffer-process-coding-system 'gbk 'gbk))
+    ;;(add-hook 'shell-mode-hook #'kevin/windows-shell-mode-coding)
+    (add-hook 'inferior-python-mode-hook
+              #'kevin/windows-shell-mode-coding)))
