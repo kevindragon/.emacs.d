@@ -33,6 +33,8 @@
 ;; set font
 (when (member "Courier New" (font-family-list))
   (set-face-attribute 'default nil :font "Courier New"))
+(when (string-equal system-type "gnu/linux")
+  (set-default-font "Monospace-10"))
 
 ;; set ckj font windows下有中文的内容很慢，用下面完美解决
 (when (string-equal system-type "windows-nt")
