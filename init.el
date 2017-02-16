@@ -190,7 +190,16 @@ If the new path's directories does not exist, create them."
                              'cider-repl-clear-buffer)))
   (add-hook 'clojure-mode-hook #'aggressive-indent-mode)
   (setq cider-repl-display-help-banner nil)
-  (setq cider-repl-use-pretty-printing t))
+  (setq cider-repl-use-pretty-printing t)
+  (defun cider-with-profile (profile)
+    "Starts up a cider repl using jack-in with the specific lein profile
+   selected."
+    (interactive "sProfile: ")
+    (message "%s" profile)
+    (let* ((profile-str (replace-regexp-in-string ":\\(.*\\)$" "\\1" profile))
+           (lein-params (concat "with-profile +" profile-str " repl :headless")))
+      (setq cider-lein-parameters lein-params)
+      (cider-jack-in))))
 
 (when (package-installed-p 'web-mode)
   (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
