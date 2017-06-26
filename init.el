@@ -52,10 +52,11 @@
 (prefer-coding-system 'utf-8-dos)
 (prefer-coding-system 'utf-8-unix)
 
-;; no toolbar
-(tool-bar-mode 0)
-;; disable scroll bar
-(scroll-bar-mode 0)
+(when (display-graphic-p)
+  ;; no toolbar
+  (tool-bar-mode 0)
+  ;; disable scroll bar
+  (scroll-bar-mode 0))
 
 (display-time-mode 1)
 (setq display-time-24hr-format t)
