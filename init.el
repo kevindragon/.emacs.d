@@ -40,7 +40,19 @@
 (when (string-equal system-type "windows-nt")
   (dolist (charset '(kana han cjk-misc bopomofo))
   (set-fontset-font (frame-parameter nil 'font) charset
-                    (font-spec :family "微软雅黑" :size 12))))
+                    (font-spec :family "微软雅黑" :size 12))
+  (let ((mypaths
+         '("C:/msys64/mingw64/bin"
+           "C:/msys64/usr/bin"
+           "C:/Program Files (x86)/Mozilla Firefox/"
+           "C:/Program Files (x86)/Google/Chrome/Application")))
+    (setenv "PATH" (concat
+                    (mapconcat 'identity mypaths ";") ";"
+                    (getenv "PATH")))
+    (setq exec-path (append
+                     mypaths
+                     (split-string (getenv "PATH") ";")
+                     (list "." exec-directory))))))
 
 ;; coding system
 (prefer-coding-system 'cp950)
