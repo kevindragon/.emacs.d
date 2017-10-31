@@ -128,6 +128,8 @@ If the new path's directories does not exist, create them."
         '(better-defaults
           company
           yasnippet
+          exec-path-from-shell
+          treemacs
           scala-mode
           sbt-mode
           ensime
@@ -187,6 +189,10 @@ If the new path's directories does not exist, create them."
 
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
 (load custom-file)
+
+;; exec-path-from-shell
+(when (package-installed-p 'exec-path-from-shell)
+  (exec-path-from-shell-initialize))
 
 ;; use ivy
 (when (package-installed-p 'ivy)
