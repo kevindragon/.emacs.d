@@ -159,7 +159,10 @@ If the new path's directories does not exist, create them."
           highlight-symbol
           origami
           ranger
-          gnuplot-mode))
+          go-mode
+          image+
+          nyan-mode
+          diminish))
 
   ;; fetch the list of packages available
   (unless package-archive-contents
@@ -194,6 +197,27 @@ If the new path's directories does not exist, create them."
 (when (package-installed-p 'exec-path-from-shell)
   (exec-path-from-shell-initialize))
 
+
+;; powerline
+(when (package-installed-p 'powerline)
+  (powerline-default-theme))
+
+
+;; projectile
+(when (package-installed-p 'projectile)
+  (projectile-mode))
+
+
+;; nyan-mode 彩虹猫
+(when (package-installed-p 'nyan-mode)
+  (nyan-mode 1))
+
+
+;; mode line mode names settings
+(when (package-installed-p 'diminish)
+  (diminish 'projectile-mode " Ⓟ"))
+
+
 ;; use ivy
 (when (package-installed-p 'ivy)
   (ivy-mode 1)
@@ -208,8 +232,11 @@ If the new path's directories does not exist, create them."
               (local-set-key (kbd "M-RET s c")
                              'cider-repl-clear-buffer)))
   (add-hook 'clojure-mode-hook #'aggressive-indent-mode)
+  (add-hook 'clojure-mode-hook #'eldoc-mode)
   (setq cider-repl-display-help-banner nil)
-  (setq cider-repl-use-pretty-printing t)
+  (setq cider-repl-use-pretty-printing nil)
+  (setq cider-dynamic-indentation nil)
+  ;;(setq clojure-indent-style :always-indent)
   (defun cider-with-profile (profile)
     "Starts up a cider repl using jack-in with the specific lein profile
    selected."
@@ -218,7 +245,20 @@ If the new path's directories does not exist, create them."
     (let* ((profile-str (replace-regexp-in-string ":\\(.*\\)$" "\\1" profile))
            (lein-params (concat "with-profile +" profile-str " repl :headless")))
       (setq cider-lein-parameters lein-params)
-      (cider-jack-in))))
+      (cider-jack-in)))
+  (defun cider-figwheel-repl ()
+    (interactive)
+    (when (package-installed-p 'inf-clojure)
+      (inf-clojure "lein figwheel")))
+  (defun cider-boot-figwheel-repl ()
+    (interactive)
+    (when (package-installed-p 'inf-clojure)
+      (inf-clojure "boot figwheel repl")))
+  (setq cider-cljs-lein-repl
+      "(do (require 'figwheel-sidecar.repl-api)
+           (figwheel-sidecar.repl-api/start-figwheel!)
+           (figwheel-sidecar.repl-api/cljs-repl))"))
+
 
 (when (package-installed-p 'web-mode)
   (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
@@ -281,3 +321,13 @@ If the new path's directories does not exist, create them."
     ;;(add-hook 'shell-mode-hook #'kevin/windows-shell-mode-coding)
     (add-hook 'inferior-python-mode-hook
               #'kevin/windows-shell-mode-coding)))
+(when (package-installed-p 'ein)
+  (require 'ein)
+  (require 'ein-loaddefs)
+  (require 'ein-notebook)
+  (require 'ein-subpackages)
+  (with-eval-after-load "ein"
+  (defun advice:ein:notebooklist-open (&rest args)
+    (call-interactively 'ein:force-ipython-version-check)
+    'before)
+  (advice-add 'ein:notebooklist-open :before 'advice:ein:notebooklist-open)))
