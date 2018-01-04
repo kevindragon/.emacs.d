@@ -128,17 +128,16 @@ If the new path's directories does not exist, create them."
         '(better-defaults
           company
           yasnippet
-          exec-path-from-shell
-          treemacs
           scala-mode
           sbt-mode
-          ensime
           which-key
+          exec-path-from-shell
           clojure-mode
           inf-clojure
           cider
           ;;parinfer
           ;;paredit
+          ensime
           elpy
           py-autopep8
           ein
@@ -155,8 +154,10 @@ If the new path's directories does not exist, create them."
           aggressive-indent
           window-numbering
           projectile
+          powerline
           rainbow-delimiters
           highlight-symbol
+          highlight-thing
           origami
           ranger
           go-mode
