@@ -13,6 +13,7 @@
 
 ;; load key bindings myself
 (load "keybindings.el")
+(load "myfuns.el")
 
 ;; set location on frame title
 (defun frame-title-string ()
