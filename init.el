@@ -275,6 +275,15 @@ If the new path's directories does not exist, create them."
   (setq web-mode-code-indent-offset 2)
   (setq web-mode-enable-current-column-highlight t))
 
+
+;; js mode
+(when (package-installed-p 'js2-mode)
+  (setq js2-basic-offset 2)
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+  ;;(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js2-jsx-mode))
+  (add-hook 'js2-mode-hook #'js2-refactor-mode))
+
+
 (when (package-installed-p 'window-numbering)
   (window-numbering-mode))
 
