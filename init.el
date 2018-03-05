@@ -291,7 +291,9 @@ If the new path's directories does not exist, create them."
 
 
 ;; org mode
-(setq org-startup-indented t)
+(when (package-installed-p 'org-mode)
+  (setq org-startup-indented t)
+  (setq org-src-fontify-natively t))
 
 
 ;; python
