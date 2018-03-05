@@ -163,7 +163,6 @@ If the new path's directories does not exist, create them."
           ranger
           go-mode
           image+
-          nyan-mode
           diminish))
 
   ;; fetch the list of packages available
@@ -208,11 +207,6 @@ If the new path's directories does not exist, create them."
 ;; projectile
 (when (package-installed-p 'projectile)
   (projectile-mode))
-
-
-;; nyan-mode 彩虹猫
-(when (package-installed-p 'nyan-mode)
-  (nyan-mode 1))
 
 
 ;; mode line mode names settings
