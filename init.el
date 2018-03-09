@@ -166,7 +166,8 @@ If the new path's directories does not exist, create them."
           ranger
           go-mode
           image+
-          diminish))
+          diminish
+          restclient))
 
   ;; fetch the list of packages available
   (unless package-archive-contents
