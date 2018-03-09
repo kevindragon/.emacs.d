@@ -159,7 +159,6 @@ If the new path's directories does not exist, create them."
           aggressive-indent
           window-numbering
           projectile
-          powerline
           rainbow-delimiters
           highlight-symbol
           highlight-thing
@@ -201,11 +200,6 @@ If the new path's directories does not exist, create them."
 ;; exec-path-from-shell
 (when (package-installed-p 'exec-path-from-shell)
   (exec-path-from-shell-initialize))
-
-
-;; powerline
-(when (package-installed-p 'powerline)
-  (powerline-default-theme))
 
 
 ;; projectile
@@ -314,7 +308,9 @@ If the new path's directories does not exist, create them."
 ;; python
 (when (package-installed-p 'elpy)
   (elpy-enable)
-  (elpy-use-ipython)
+  (setq python-shell-interpreter "ipython"
+        python-shell-interpreter-args "-i --simple-prompt"
+        python-shell-interpreter-interactive-arg "-i --simple-prompt")
   (add-hook 'inferior-python-mode-hook
             (lambda ()
               (local-set-key (kbd "C-c C-b C-c")
