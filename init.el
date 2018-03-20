@@ -144,6 +144,7 @@ If the new path's directories does not exist, create them."
           ;;paredit
           ensime
           elpy
+          company-jedi
           py-autopep8
           ein
           ivy
@@ -154,6 +155,8 @@ If the new path's directories does not exist, create them."
           magit
           web-mode
           js2-mode
+          rjsx-mode
+          js2-refactor
           undo-tree
           json-mode
           aggressive-indent
@@ -306,9 +309,10 @@ If the new path's directories does not exist, create them."
   (setq org-src-fontify-natively t))
 
 
-;; python
 (when (package-installed-p 'elpy)
   (elpy-enable)
+  (when (package-installed-p 'company-jedi)
+    (add-to-list 'company-backends 'company-jedi))
   (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args "-i --simple-prompt"
         python-shell-interpreter-interactive-arg "-i --simple-prompt")
@@ -319,18 +323,18 @@ If the new path's directories does not exist, create them."
                                (interactive)
                                (let ((comint-buffer-maximum-size 0))
                                  (comint-clear-buffer))))))
-  (when (package-installed-p 'py-autopep8)
-    (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
+  ;;(when (package-installed-p 'py-autopep8)
+  ;;  (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
+  ;; 解决 Shell Mode(cmd) 下中文乱码问题
   (when (string-equal system-type "windows-nt")
-    ;; 解决 Shell Mode(cmd) 下中文乱码问题
-    ;;(set-terminal-coding-system 'gbk)
-    ;;(modify-coding-system-alist 'process "*" 'gbk)
     (defun kevin/windows-shell-mode-coding ()
       (set-buffer-file-coding-system 'gbk)
       (set-buffer-process-coding-system 'gbk 'gbk))
-    ;;(add-hook 'shell-mode-hook #'kevin/windows-shell-mode-coding)
     (add-hook 'inferior-python-mode-hook
-              #'kevin/windows-shell-mode-coding)))
+              #'kevin/windows-shell-mode-coding)
+    (add-hook 'python-mode-hook
+              (lambda ()
+                (add-hook 'before-save-hook 'elpy-format-code)))))
 (when (package-installed-p 'ein)
   (require 'ein)
   (require 'ein-loaddefs)
