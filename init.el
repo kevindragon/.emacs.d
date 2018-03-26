@@ -72,8 +72,7 @@
   (menu-bar-mode 0)
   ;; disable scroll bar
   (scroll-bar-mode 0))
-;; delete selection mode
-(delete-selection-mode t)
+
 
 (display-time-mode 1)
 (setq display-time-24hr-format t)
