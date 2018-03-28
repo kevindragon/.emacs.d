@@ -303,9 +303,15 @@ If the new path's directories does not exist, create them."
 
 
 ;; org mode
-(when (package-installed-p 'org-mode)
-  (setq org-startup-indented t)
-  (setq org-src-fontify-natively t))
+(when (package-installed-p 'org)
+  (setq org-src-fontify-natively t)
+  (when (string-equal system-type "windows-nt")
+    (setq org-directory "c:/project/orgs"))
+  (setq org-default-notes-file (concat org-directory "/notes.org"))
+  (setq org-todo-keywords
+      '((sequence "TODO(t)" "|" "DONE(d!)")
+        (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f!)")
+        (sequence "|" "CANCELED(c@/!)"))))
 
 
 (when (package-installed-p 'elpy)
