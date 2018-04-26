@@ -169,7 +169,8 @@ If the new path's directories does not exist, create them."
           go-mode
           image+
           diminish
-          restclient))
+          restclient
+          treemacs))
 
   ;; fetch the list of packages available
   (unless package-archive-contents
@@ -350,3 +351,8 @@ If the new path's directories does not exist, create them."
     (call-interactively 'ein:force-ipython-version-check)
     'before)
   (advice-add 'ein:notebooklist-open :before 'advice:ein:notebooklist-open)))
+
+
+;; treemacs
+(when (package-installed-p 'treemacs)
+  (setq treemacs-width 25))
