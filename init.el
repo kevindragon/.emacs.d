@@ -91,7 +91,7 @@
 If the new path's directories does not exist, create them."
   (let* ((backupRootDir "~/.emacs.d/emacs-backup/")
          ;; remove Windows driver letter in path, for example: “C:”
-         (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath )) 
+         (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath ))
          (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") )))
     (make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
     backupFilePath))
@@ -228,12 +228,15 @@ If the new path's directories does not exist, create them."
   (add-hook 'cider-repl-mode-hook
             (lambda ()
               (local-set-key (kbd "M-RET s c")
-                             'cider-repl-clear-buffer)))
-  (add-hook 'clojure-mode-hook #'aggressive-indent-mode)
+                             'cider-repl-clear-buffer)
+              (local-set-key (kbd "<f7>")
+                             'cider-eval-last-sexp)))
+  ;;(add-hook 'clojure-mode-hook #'aggressive-indent-mode)
   (add-hook 'clojure-mode-hook #'eldoc-mode)
   (setq cider-repl-display-help-banner nil)
   (setq cider-repl-use-pretty-printing nil)
   (setq cider-dynamic-indentation nil)
+  (setq cider-default-cljs-repl 'figwheel)
   ;;(setq clojure-indent-style :always-indent)
   (defun cider-with-profile (profile)
     "Starts up a cider repl using jack-in with the specific lein profile
@@ -241,7 +244,8 @@ If the new path's directories does not exist, create them."
     (interactive "sProfile: ")
     (message "%s" profile)
     (let* ((profile-str (replace-regexp-in-string ":\\(.*\\)$" "\\1" profile))
-           (lein-params (concat "with-profile +" profile-str " repl :headless")))
+           (lein-params (concat "with-profile +" profile-str
+                                " repl :headless")))
       (setq cider-lein-parameters lein-params)
       (cider-jack-in)))
   (defun cider-figwheel-repl ()
@@ -253,9 +257,11 @@ If the new path's directories does not exist, create them."
     (when (package-installed-p 'inf-clojure)
       (inf-clojure "boot figwheel repl")))
   (setq cider-cljs-lein-repl
-      "(do (require 'figwheel-sidecar.repl-api)
+        "(do (require 'figwheel-sidecar.repl-api)
            (figwheel-sidecar.repl-api/start-figwheel!)
-           (figwheel-sidecar.repl-api/cljs-repl))"))
+           (figwheel-sidecar.repl-api/cljs-repl))")
+  (when (string-equal system-type "windows-nt")
+    (setq cider-jdk-src-paths '("C:/Program Files/Java/jdk1.8.0_111/src.zip"))))
 
 
 (when (package-installed-p 'web-mode)
