@@ -13,3 +13,8 @@
           (rename-buffer new-name)
           (set-visited-file-name new-name)
           (set-buffer-modified-p nil))))))
+
+(defun kj/insert-current-datetime ()
+  (interactive)
+  (let ((current-date-time-format "%Y %b %d %H:%M:%S %a %Z"))
+    (insert (format-time-string current-date-time-format))))

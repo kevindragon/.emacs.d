@@ -43,10 +43,14 @@
   (set-fontset-font (frame-parameter nil 'font) charset
                     (font-spec :family "微软雅黑" :size 12))
   (let ((mypaths
-         '("C:/msys64/mingw64/bin"
+         '("C:/Program Files/Git/bin"
+           "C:/msys64/mingw64/bin"
            "C:/msys64/usr/bin"
            "C:/Program Files (x86)/Mozilla Firefox/"
-           "C:/Program Files (x86)/Google/Chrome/Application")))
+           "C:/Program Files (x86)/Google/Chrome/Application"
+           "C:/Program Files/Oracle/VirtualBox"
+           "C:/Users/jiangkx/AppData/Local/Continuum/anaconda3"
+           "C:/Users/jiangkx/AppData/Local/Continuum/anaconda3/Scripts")))
     (setenv "PATH" (concat
                     (mapconcat 'identity mypaths ";") ";"
                     (getenv "PATH")))
