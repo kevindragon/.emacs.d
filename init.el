@@ -8,20 +8,21 @@
 (setq user-full-name "Kevin Jiang")
 (setq user-mail-address "wenlin1988@126.com")
 
+(setq gc-cons-threshold-old gc-cons-threshold)
+(setq gc-cons-threshold 1073741824)
+
 ;; set load path
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
-;; load key bindings myself
-(load "keybindings.el")
-(load "myfuns.el")
+(setq custom-file "~/.emacs.d/.emacs-custom.el")
 
 ;; set location on frame title
 (defun frame-title-string ()
   "Return the file name of current buffer, using ~ if under home directory"
   (let ((fname (or
-               (buffer-file-name (current-buffer))
-               (buffer-name)))
-       (max-len 100))
+                (buffer-file-name (current-buffer))
+                (buffer-name)))
+        (max-len 100))
     (when (string-match (getenv "HOME") fname)
       (setq fname (replace-match "~" t t fname)))
     (if (> (length fname) max-len)
@@ -40,8 +41,22 @@
 ;; set ckj font windows下有中文的内容很慢，用下面完美解决
 (when (string-equal system-type "windows-nt")
   (dolist (charset '(kana han cjk-misc bopomofo))
-  (set-fontset-font (frame-parameter nil 'font) charset
-                    (font-spec :family "微软雅黑" :size 12))
+    (set-fontset-font (frame-parameter nil 'font) charset
+                      (font-spec :family "宋体" :size 12)))
+  ;; (set-face-attribute
+  ;;  'default nil
+  ;;  :font (font-spec :name "-outline-Courier New-bold-italic-normal-mono-*-*-*-*-c-*-iso10646-1"
+  ;;                   :weight 'normal
+  ;;                   :slant 'normal
+  ;;                   :size 9.0))
+  ;; (dolist (charset '(kana han symbol cjk-misc bopomofo))
+  ;;   (set-fontset-font
+  ;;    (frame-parameter nil 'font)
+  ;;    charset
+  ;;    (font-spec :name "-outline-微软雅黑-normal-normal-normal-sans-*-*-*-*-p-*-iso10646-1"
+  ;;               :weight 'normal
+  ;;               :slant 'normal
+  ;;               :size 10.5)))
   (let ((mypaths
          '("C:/Program Files/Git/bin"
            "C:/msys64/mingw64/bin"
@@ -50,14 +65,17 @@
            "C:/Program Files (x86)/Google/Chrome/Application"
            "C:/Program Files/Oracle/VirtualBox"
            "C:/Users/jiangkx/AppData/Local/Continuum/anaconda3"
-           "C:/Users/jiangkx/AppData/Local/Continuum/anaconda3/Scripts")))
+           "C:/Users/jiangkx/AppData/Local/Continuum/anaconda3/Scripts"
+           "C:/Program Files/Zeal"
+           "C:/Users/jiangkx/AppData/Roaming/Composer/vendor/bin")))
     (setenv "PATH" (concat
                     (mapconcat 'identity mypaths ";") ";"
                     (getenv "PATH")))
     (setq exec-path (append
                      mypaths
                      (split-string (getenv "PATH") ";")
-                     (list "." exec-directory))))))
+                     (list "." exec-directory))))
+  (setq tramp-default-method "plink"))
 
 ;; coding system
 (prefer-coding-system 'cp950)
@@ -69,35 +87,36 @@
 (prefer-coding-system 'utf-8-dos)
 (prefer-coding-system 'utf-8-unix)
 
-(when (display-graphic-p)
-  ;; no toolbar
-  (tool-bar-mode 0)
-  ;; no menu bar
-  (menu-bar-mode 0)
-  ;; disable scroll bar
-  (scroll-bar-mode 0))
-
-
+;; no toolbar
+(tool-bar-mode 0)
+;; no menu bar
+(menu-bar-mode 0)
+;; disable scroll bar
+(scroll-bar-mode 0)
 (display-time-mode 1)
 (setq display-time-24hr-format t)
 (setq display-time-day-and-date t)
 ;;(transient-mark-mode t)
+(global-hl-line-mode 1)
 
 ;; stop creating backup~ files
 (setq make-backup-files nil)
 ;; stop creating #autosave# files
 (setq auto-save-default nil)
 ;; backup in one place. flat, no tree structure
-;;(setq backup-directory-alist '(("" . "~/.emacs.d/emacs-backup")))
+;; (setq backup-directory-alist '(("" . "~/.emacs.d/emacs-backup")))
 ;; make backup to a designated dir, mirroring the full path
 (defun my-backup-file-name (fpath)
   "Return a new file path of a given file path.
 If the new path's directories does not exist, create them."
   (let* ((backupRootDir "~/.emacs.d/emacs-backup/")
          ;; remove Windows driver letter in path, for example: “C:”
-         (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath ))
-         (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") )))
-    (make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
+         (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath))
+         (backupFilePath (replace-regexp-in-string
+                          "//" "/"
+                          (concat backupRootDir filePath "~"))))
+    (make-directory (file-name-directory backupFilePath)
+                    (file-name-directory backupFilePath))
     backupFilePath))
 (setq make-backup-file-name-function 'my-backup-file-name)
 
@@ -117,25 +136,62 @@ If the new path's directories does not exist, create them."
 (electric-pair-mode t)
 
 (setq x-select-enable-clipboard t)
-(global-linum-mode 1)
+;; (global-linum-mode 1)
 (line-number-mode)
 (column-number-mode)
 
 ;; replace yes no to y/n
 (fset 'yes-or-no-p 'y-or-n-p)
 
+;; remove trailling whitespace
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; keep a list of recently opened files
+(recentf-mode 1)
+;; set F7 to list recently opened file
+;; (global-set-key (kbd "<f7>") 'recentf-open-files)
+
+;; make ibuffer default
+(defalias 'list-buffers 'ibuffer)
+
+;; 将Emacs插件库同步到本地来安装
+;; https://lujun9972.github.io/blog/2018/03/06/%E5%B0%86emacs%E6%8F%92%E4%BB%B6%E5%BA%93%E5%90%8C%E6%AD%A5%E5%88%B0%E6%9C%AC%E5%9C%B0%E6%9D%A5%E5%AE%89%E8%A3%85/
+
 (require 'package)
+;; (add-to-list 'package-archives
+;;              '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
+
+;; (require 'benchmark-init)
+;; To disable collection of benchmark data after init is done.
+;; (add-hook 'after-init-hook 'benchmark-init/deactivate)
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(eval-when-compile
+  (require 'use-package))
+
+(setq use-package-always-ensure t)
+(setq use-package-always-defer t)
+(setq use-package-expand-minimally t)
+(setq use-package-enable-imenu-support t)
 
 ;;; package
 (defun install-packages ()
   (interactive)
   (setq package-list
         '(better-defaults
+          ;;cnfonts
+          auto-complete
           company
           yasnippet
+          yasnippet-snippets
           scala-mode
           sbt-mode
           which-key
@@ -143,17 +199,17 @@ If the new path's directories does not exist, create them."
           clojure-mode
           inf-clojure
           cider
-          ;;parinfer
-          ;;paredit
+          cider-decompile
+          paredit
           ensime
           elpy
-          company-jedi
+          anaconda-mode
           py-autopep8
           ein
           ivy
-          ;;helm
-          ;;swiper-helm
           swiper
+          counsel
+          smex
           markdown-mode
           magit
           web-mode
@@ -173,196 +229,348 @@ If the new path's directories does not exist, create them."
           go-mode
           image+
           diminish
-          restclient
-          treemacs))
-
+          hexo
+          treemacs
+          keyfreq
+          ;;benchmark-init
+          ))
   ;; fetch the list of packages available
   (unless package-archive-contents
     (package-refresh-contents))
-
   ;; install the missing package-list
   (dolist (package package-list)
     (unless (package-installed-p package)
       (package-install package))))
 
+
 ;; setup yasnippet
-(when (package-installed-p 'yasnippet)
-  (yas-global-mode t)
-  (yas-minor-mode-on))
+(use-package yasnippet
+  :init (yas-global-mode 1))
+(use-package yasnippet-snippets)
 
-;; enable company mode
-(when (package-installed-p 'company)
-  (global-company-mode 1))
+(defun autoinsert-yas-expand()
+  "Replace text in yasnippet template."
+  (yas-expand-snippet (buffer-string) (point-min) (point-max)))
+(use-package autoinsert
+  :init
+  ;; Don't want to be prompted before insertion:
+  (setq auto-insert-query nil)
+  (setq auto-insert-directory (locate-user-emacs-file "templates"))
+  (add-hook 'find-file-hook 'auto-insert)
+  (auto-insert-mode 1)
+  :config
+  ;; (define-auto-insert "\\.el$" ["default-lisp.el" ha/autoinsert-yas-expand])
+  ;; (define-auto-insert "\\.sh$" ["default-sh.sh" ha/autoinsert-yas-expand])
+  (define-auto-insert "\\.php$" ["template.php" autoinsert-yas-expand])
+  ;; (define-auto-insert "/bin/"  ["default-sh.sh" ha/autoinsert-yas-expand])
+  ;; (define-auto-insert "\\.html?$" ["default-html.html" ha/autoinsert-yas-expand])
+  )
 
-;; keep a list of recently opened files
-(recentf-mode 1)
-;; set F7 to list recently opened file
-(global-set-key (kbd "<f7>") 'recentf-open-files)
-
-;; make ibuffer default
-(defalias 'list-buffers 'ibuffer)
-
-(setq custom-file "~/.emacs.d/.emacs-custom.el")
-(load custom-file)
-
-;; exec-path-from-shell
-(when (package-installed-p 'exec-path-from-shell)
-  (exec-path-from-shell-initialize))
-
-
-;; projectile
-(when (package-installed-p 'projectile)
-  (projectile-mode))
-
+;; enable company
+(use-package company
+  :init (setq company-dabbrev-downcase nil))
+(add-hook 'after-init-hook 'global-company-mode)
 
 ;; mode line mode names settings
-(when (package-installed-p 'diminish)
-  (diminish 'projectile-mode " Ⓟ"))
+(use-package diminish
+  :diminish ((abbrev-mode . " A")))
 
+(use-package magit
+  :config
+  (setq magit-commit-show-diff nil
+        truncate-lines nil))
+
+;; ag
+(use-package ag)
+(use-package rg
+  :config (rg-enable-default-bindings (kbd "M-s")))
+
+;; projectile
+(use-package projectile
+  :diminish projectile-mode
+  :init (add-hook 'after-init-hook 'projectile-mode t)
+  :config
+  (setq projectile-mode-line
+        '(:eval (format "[%s]" (projectile-project-name)))))
+
+(load "myfuns.el")
 
 ;; use ivy
-(when (package-installed-p 'ivy)
-  (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t)
-  (when (package-installed-p 'swiper)
-    (global-set-key "\C-s" 'swiper)))
+(use-package ivy
+  :config (progn (ivy-mode 1)
+                 (setq ivy-use-virtual-buffers t)))
+(use-package swiper
+  :bind ("C-s" . swiper))
+(use-package counsel
+  :bind (("C-x C-f" . counsel-find-file)
+         ("M-x" . counsel-M-x)))
+
+(use-package zeal-at-point)
+
+(use-package aggressive-indent)
 
 ;; clojure
-(when (package-installed-p 'clojure-mode)
-  (add-hook 'cider-repl-mode-hook
-            (lambda ()
-              (local-set-key (kbd "M-RET s c")
-                             'cider-repl-clear-buffer)
-              (local-set-key (kbd "<f7>")
-                             'cider-eval-last-sexp)))
-  ;;(add-hook 'clojure-mode-hook #'aggressive-indent-mode)
-  (add-hook 'clojure-mode-hook #'eldoc-mode)
-  (setq cider-repl-display-help-banner nil)
-  (setq cider-repl-use-pretty-printing nil)
-  (setq cider-dynamic-indentation nil)
-  (setq cider-default-cljs-repl 'figwheel)
-  ;;(setq clojure-indent-style :always-indent)
-  (defun cider-with-profile (profile)
-    "Starts up a cider repl using jack-in with the specific lein profile
+(use-package cider
+  :pin melpa-stable
+  :bind (("M-RET s c" . cider-repl-clear-buffer)
+         ([f7] . cider-eval-last-sexp))
+  :init (progn
+          (add-hook 'cider-mode-hook 'eldoc-mode t)
+          (add-hook 'cider-mode-hook 'aggressive-indent-mode t)
+          (setq cider-repl-display-help-banner nil
+              cider-repl-use-pretty-printing nil
+              cider-dynamic-indentation nil
+              cider-default-cljs-repl 'figwheel
+              cider-cljs-lein-repl
+              "(do (require 'figwheel-sidecar.repl-api)
+                   (figwheel-sidecar.repl-api/start-figwheel!)
+                   (figwheel-sidecar.repl-api/cljs-repl))"))
+  :config
+  (progn
+    (defun cider-with-profile (profile)
+      "Starts up a cider repl using jack-in with the specific lein profile
    selected."
-    (interactive "sProfile: ")
-    (message "%s" profile)
-    (let* ((profile-str (replace-regexp-in-string ":\\(.*\\)$" "\\1" profile))
-           (lein-params (concat "with-profile +" profile-str
-                                " repl :headless")))
-      (setq cider-lein-parameters lein-params)
-      (cider-jack-in)))
-  (defun cider-figwheel-repl ()
-    (interactive)
-    (when (package-installed-p 'inf-clojure)
-      (inf-clojure "lein figwheel")))
-  (defun cider-boot-figwheel-repl ()
-    (interactive)
-    (when (package-installed-p 'inf-clojure)
-      (inf-clojure "boot figwheel repl")))
-  (setq cider-cljs-lein-repl
-        "(do (require 'figwheel-sidecar.repl-api)
-           (figwheel-sidecar.repl-api/start-figwheel!)
-           (figwheel-sidecar.repl-api/cljs-repl))")
-  (when (string-equal system-type "windows-nt")
-    (setq cider-jdk-src-paths '("C:/Program Files/Java/jdk1.8.0_111/src.zip"))))
+      (interactive "sProfile: ")
+      (message "%s" profile)
+      (let* ((profile-str (replace-regexp-in-string ":\\(.*\\)$" "\\1" profile))
+             (lein-params (concat "with-profile +" profile-str
+                                  " repl :headless")))
+        (setq cider-lein-parameters lein-params)
+        (cider-jack-in)))
+    (use-package inf-clojure
+      :config
+      (progn
+        (defun cider-figwheel-repl ()
+          (interactive)
+          (inf-clojure "lein figwheel"))
+        (defun cider-boot-figwheel-repl ()
+          (interactive)
+          (inf-clojure "boot figwheel repl"))))
+    (when (string-equal system-type "windows-nt")
+      (setq cider-jdk-src-paths
+            '("C:/Program Files/Java/jdk1.8.0_111/src.zip")))))
 
+(use-package ensime
+  :pin melpa-stable)
 
-(when (package-installed-p 'web-mode)
-  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-  (setq web-mode-code-indent-offset 2)
-  (setq web-mode-enable-current-column-highlight t))
-
+;; web mode
+(use-package web-mode
+  :mode ("\\.tpl$" "\\.[agj]sp$" "\\.html?$" "\\.vue$" "\\.erb$")
+  :init (progn
+          (setq web-mode-markup-indent-offset 2)
+          (setq web-mode-css-indent-offset 2)
+          (setq web-mode-code-indent-offset 2)
+          (setq web-mode-enable-current-column-highlight t)))
 
 ;; js mode
-(when (package-installed-p 'js2-mode)
-  (setq js2-basic-offset 2)
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-  ;;(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js2-jsx-mode))
-  (add-hook 'js2-mode-hook #'js2-refactor-mode))
+(use-package js2-mode
+  :mode ("\\.js$")
+  :config (setq js2-basic-offset 2))
+(use-package js2-refactor
+  :init (add-hook 'js2-mode-hook 'js2-refactor-mode t))
 
+(use-package window-numbering
+  :init (add-hook 'after-init-hook 'window-numbering-mode t))
 
-(when (package-installed-p 'window-numbering)
-  (window-numbering-mode))
+(use-package which-key
+  :diminish which-key-mode
+  :bind (:map help-map ("C-h" . which-key-C-h-dispatch))
+  :init (add-hook 'after-init-hook 'which-key-mode t))
 
-(when (package-installed-p 'rainbow-delimiters)
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+(use-package dumb-jump
+  :bind (("M-g o" . dumb-jump-go-other-window)
+         ("M-g j" . dumb-jump-go)
+         ("M-g i" . dumb-jump-go-prompt)
+         ("M-g x" . dumb-jump-go-prefer-external)
+         ("M-g z" . dumb-jump-go-prefer-external-other-window))
+  :config (setq dumb-jump-selector 'ivy))
 
+(use-package origami
+  :bind (("C-c z o" . origami-open-node)
+         ("C-c z f" . origami-close-node)
+         ("C-c z a" . origami-close-all-nodes)
+         ("C-c z r" . origami-open-all-nodes))
+  :config (global-origami-mode))
 
-;; fold
-(when (package-installed-p 'origami)
-  (global-origami-mode)
-  (add-hook 'origami-mode-hook
-            (lambda ()
-              (local-set-key (kbd "C-c z o") 'origami-open-node)
-              (local-set-key (kbd "C-c z f") 'origami-close-node)
-              (local-set-key (kbd "C-c z a") 'origami-close-all-nodes)
-              (local-set-key (kbd "C-c z r") 'origami-open-all-nodes))))
+(use-package symbol-overlay
+  :init (symbol-overlay-mode 1)
+  :bind (("C-c M-i" . symbol-overlay-put)
+         ("C-c M-n" . symbol-overlay-switch-forward)
+         ("C-c M-p" . symbol-overlay-switch-backward)))
 
-(when (package-installed-p 'which-key)
-  (which-key-mode))
+(use-package yaml-mode)
 
+;; Racket
+(use-package racket-mode
+  :config (setq racket-racket-program "C:/Program Files/Racket/Racket.exe"
+                racket-raco-program "C:/Program Files/Racket/raco.exe"))
 
 ;; org mode
-(when (package-installed-p 'org)
-  (setq org-src-fontify-natively t)
-  (when (string-equal system-type "windows-nt")
-    (setq org-directory "c:/project/orgs"))
-  (setq org-default-notes-file (concat org-directory "/notes.org"))
-  (setq org-todo-keywords
-      '((sequence "TODO(t)" "|" "DONE(d!)")
-        (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f!)")
-        (sequence "|" "CANCELED(c@/!)"))))
+(use-package org
+  :ensure nil
+  :init (add-hook 'org-mode-hook
+                  (lambda ()
+                    (org-indent-mode 1)
+                    (diminish 'org-indent-mode))
+		  t)
+  :config
+  (progn
+    (setq org-startup-indented t)
+    (setq org-src-fontify-natively t)
+    (when (string-equal system-type "windows-nt")
+      (setq org-directory "c:/project/orgs"))
+    (setq org-default-notes-file (concat org-directory "/notes.org"))
+    (setq org-todo-keywords
+          '((sequence "TODO(t)" "|" "DONE(d!)")
+            (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f!)")
+            (sequence "|" "CANCELED(c@/!)")))))
 
+;; markdown
+(use-package markdown-mode)
 
-(when (package-installed-p 'elpy)
-  (elpy-enable)
-  (when (package-installed-p 'company-jedi)
-    (add-to-list 'company-backends 'company-jedi))
-  (setq python-shell-interpreter "ipython"
-        python-shell-interpreter-args "-i --simple-prompt"
-        python-shell-interpreter-interactive-arg "-i --simple-prompt")
-  (add-hook 'inferior-python-mode-hook
-            (lambda ()
-              (local-set-key (kbd "C-c C-b C-c")
-                             (lambda ()
-                               (interactive)
-                               (let ((comint-buffer-maximum-size 0))
-                                 (comint-clear-buffer))))))
-  ;;(when (package-installed-p 'py-autopep8)
-  ;;  (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
-  ;; 解决 Shell Mode(cmd) 下中文乱码问题
-  (when (string-equal system-type "windows-nt")
-    (defun kevin/windows-shell-mode-coding ()
-      (set-buffer-file-coding-system 'gbk)
-      (set-buffer-process-coding-system 'gbk 'gbk))
+;; python
+(use-package elpy
+  :commands elpy-enable
+  :init (with-eval-after-load 'python (elpy-enable))
+  :config
+  (progn
+    (elpy-enable)
+    (setq python-shell-interpreter "ipython"
+          python-shell-interpreter-args "-i --simple-prompt --profile=dev"
+          python-shell-interpreter-interactive-arg "-i --simple-prompt")
     (add-hook 'inferior-python-mode-hook
-              #'kevin/windows-shell-mode-coding)
-    (add-hook 'python-mode-hook
               (lambda ()
-                (add-hook 'before-save-hook 'elpy-format-code)))))
-(when (package-installed-p 'ein)
-  (require 'ein)
-  (require 'ein-loaddefs)
-  (require 'ein-notebook)
-  (require 'ein-subpackages)
-  (with-eval-after-load "ein"
-  (defun advice:ein:notebooklist-open (&rest args)
-    (call-interactively 'ein:force-ipython-version-check)
-    'before)
-  (advice-add 'ein:notebooklist-open :before 'advice:ein:notebooklist-open)))
+                (local-set-key (kbd "C-c C-b C-c")
+                               (lambda ()
+                                 (interactive)
+                                 (let ((comint-buffer-maximum-size 0))
+                                   (comint-clear-buffer)))))
+	      t)
+    ;; 解决 Shell Mode(cmd) 下中文乱码问题
+    (when (string-equal system-type "windows-nt")
+      (defun kevin/windows-shell-mode-coding ()
+        (set-buffer-file-coding-system 'gbk)
+        (set-buffer-process-coding-system 'gbk 'gbk))
+      (add-hook 'inferior-python-mode-hook
+                'kevin/windows-shell-mode-coding
+		t)
+      ;; (add-hook 'python-mode-hook
+      ;;           (lambda ()
+      ;;             (add-hook 'before-save-hook 'elpy-format-code)))
+      )))
+(use-package py-autopep8
+  :hook elpy-mode-hook)
+(use-package anaconda-mode
+  :hook ((python-mode . anaconda-mode)
+         (python-mode . anaconda-eldoc-mode)))
+(use-package ein
+  :defer t
+  :config (with-eval-after-load "ein"
+            (defun advice:ein:notebooklist-open (&rest args)
+              (call-interactively 'ein:force-ipython-version-check)
+              'before)
+            (advice-add 'ein:notebooklist-open
+                        :before 'advice:ein:notebooklist-open)))
 
+;; golang
+(use-package go-mode
+  :ensure company
+  :config
+  (progn
+    (add-hook 'go-mode-hook
+              (lambda ()
+                (set (make-local-variable 'company-backends) '(company-go))
+                (company-mode))
+	      t)
+    (add-hook 'go-mode-hook
+              (lambda ()
+                (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports))
+	      t)
+    (use-package go-eldoc
+      :init (add-hook 'go-mode-hook 'go-eldoc-setup t))
+    (add-hook 'before-save-hook 'gofmt-before-save)))
+
+
+;; set ring sounds
+;; (require 'alarm)
+
+
+;; php
+;;(require 'php2-mode)
+
+(use-package php-mode
+  :mode ("\\.php[345]?\\'" "\\.inc\\'" "\\.module\\'")
+  :config
+  (require 'my-php)
+  (add-to-list 'company-backends 'kj/company-php-backend))
+
+;; composer global require "squizlabs/php_codesniffer=*"
+;; (use-package phpcbf
+;;   :init (add-hook 'php-mode-hook 'phpcbf-enable-on-save)
+;;   :config (setq phpcbf-standard "PSR2"))
+
+(use-package phpunit
+  :config
+  (progn (add-to-list 'auto-mode-alist '("\\.php$'" . phpunit-mode))
+         (setq phpunit-program "php vendor/phpunit/phpunit/phpunit")))
+
+;; restclient
+(use-package restclient
+  :mode ("\\.http" . restclient-mode))
 
 ;; treemacs
-(when (package-installed-p 'treemacs)
-  (setq treemacs-width 25))
+(use-package treemacs
+  ;; :config (setq treemacs-width 25)
+  )
+
+;; key freq
+(use-package keyfreq
+  :config (progn (keyfreq-mode 1)
+                 (keyfreq-autosave-mode 1)))
+
+(use-package rainbow-delimiters
+  :hook ((emacs-lisp-mode . rainbow-delimiters-mode)
+         (clojure-mode . rainbow-delimiters-mode)
+         (prog-mode . rainbow-delimiters-mode)))
+
+(use-package robe
+  :ensure company
+  :init (add-hook 'ruby-mode-hook 'robe-mode)
+  :config (add-to-list 'company-backends 'company-robe))
+
+(use-package rust-mode
+  :bind (:map rust-mode-map
+         ("TAB" . company-indent-or-complete-common))
+  :config (setq company-tooltip-align-annotations t))
+(use-package racer
+  :init (progn (add-hook 'rust-mode-hook #'racer-mode)
+               (add-hook 'racer-mode-hook #'eldoc-mode)
+               (add-hook 'racer-mode-hook #'company-mode)))
+
+(use-package quickrun)
+
+;; load key bindings myself
+(load "keybindings.el")
+
+;;set transparent effect
+(setq alpha-list '((100 100) (95 65) (85 55) (75 45) (65 35)))
+(defun loop-alpha ()
+  (interactive)
+  (let ((h (car alpha-list)))
+    ((lambda (a ab)
+       (set-frame-parameter (selected-frame) 'alpha (list a ab))
+       (add-to-list 'default-frame-alist (cons 'alpha (list a ab)))
+       (message "alpha is %s" a))
+     (car h) (car (cdr h)))
+    (setq alpha-list (cdr (append alpha-list (list h))))))
+(global-set-key [(f11)] 'loop-alpha)
+
+(load custom-file :no-error :no-message)
+
+;; set back gc threshold
+(setq gc-cons-threshold gc-cons-threshold-old)
+(setq garbage-collection-messages t)
+
+
+;;; end, settings should be placed above
+;;;; realy end!!!

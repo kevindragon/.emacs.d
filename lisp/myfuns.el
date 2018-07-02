@@ -18,3 +18,51 @@
   (interactive)
   (let ((current-date-time-format "%Y %b %d %H:%M:%S %a %Z"))
     (insert (format-time-string current-date-time-format))))
+
+(defun kj/php-ns-dir (file-abs-path)
+  (file-name-nondirectory
+   (directory-file-name (file-name-directory file-abs-path))))
+
+(defun kj/php-get-namespace (file-abs-path root ns)
+  (let ((dir (directory-file-name (file-name-directory file-abs-path))))
+    (if (string-prefix-p root dir)
+        (progn
+          (kj/php-get-namespace (directory-file-name dir)
+                             root
+                             (cons (kj/php-ns-dir file-abs-path) ns)))
+      ns)))
+
+(defun kj/php-namespace ()
+  (interactive)
+  (when (and buffer-file-name (ignore-errors (projectile-project-root)))
+    (concat
+     "namespace "
+     (string-join
+      (mapcar (lambda (x) (capitalize x))
+              (kj/php-get-namespace buffer-file-name
+                                    (projectile-project-root)
+                                    '()))
+      "\\")
+     ";")
+    ))
+
+(defun kj/php-class-name ()
+  (interactive)
+  (when buffer-file-name
+    (file-name-sans-extension
+     (file-name-nondirectory buffer-file-name))))
+
+(defun kj/copy-buffer-file-name ()
+  (interactive)
+  (when buffer-file-name
+    (kill-new buffer-file-name)))
+
+(require 's)
+
+(defun kj/copy-project-file-name ()
+  (interactive)
+  (when buffer-file-name
+    (kill-new
+     (s-replace
+      (or (ignore-errors (projectile-project-root)) "")
+      "" buffer-file-name))))

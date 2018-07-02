@@ -22,6 +22,9 @@
                   (newline)
                   (indent-for-tab-command)))
 
+;; ranger
+(global-set-key (kbd "C-x M-m r") 'ranger)
+
 ;; magit key bindings
 (global-set-key (kbd "C-x g") 'magit-status)
 
@@ -55,3 +58,9 @@
 
 ;; maximum frame
 (global-set-key (kbd "C-x w m") 'toggle-frame-maximized)
+
+;; nxml
+(add-hook 'nxml-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-c M-/")
+                           'comment-line)))
