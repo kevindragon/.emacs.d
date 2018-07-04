@@ -22,12 +22,6 @@
                   (newline)
                   (indent-for-tab-command)))
 
-;; ranger
-(global-set-key (kbd "C-x M-m r") 'ranger)
-
-;; magit key bindings
-(global-set-key (kbd "C-x g") 'magit-status)
-
 ;;; window operations
 ;; window split horizontal and vertical toggle
 (defun toggle-window-split ()

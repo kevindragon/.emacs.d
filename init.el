@@ -263,7 +263,8 @@ If the new path's directories does not exist, create them."
   ;; (define-auto-insert "\\.sh$" ["default-sh.sh" ha/autoinsert-yas-expand])
   (define-auto-insert "\\.php$" ["template.php" autoinsert-yas-expand])
   ;; (define-auto-insert "/bin/"  ["default-sh.sh" ha/autoinsert-yas-expand])
-  ;; (define-auto-insert "\\.html?$" ["default-html.html" ha/autoinsert-yas-expand])
+  ;; (define-auto-insert "\\.html?$"
+  ;;                     ["default-html.html" ha/autoinsert-yas-expand])
   )
 
 ;; enable company
@@ -276,6 +277,7 @@ If the new path's directories does not exist, create them."
   :diminish ((abbrev-mode . " A")))
 
 (use-package magit
+  :bind ("M-n g" . magit-status)
   :config
   (setq magit-commit-show-diff nil
         truncate-lines nil))
@@ -305,6 +307,9 @@ If the new path's directories does not exist, create them."
   :bind (("C-x C-f" . counsel-find-file)
          ("M-x" . counsel-M-x)))
 
+(use-package ranger
+  :bind ("M-n r" . ranger))
+
 (use-package zeal-at-point)
 
 (use-package aggressive-indent)
@@ -316,13 +321,13 @@ If the new path's directories does not exist, create them."
          ([f7] . cider-eval-last-sexp))
   :init (progn
           (add-hook 'cider-mode-hook 'eldoc-mode t)
-          (add-hook 'cider-mode-hook 'aggressive-indent-mode t)
+          ;;(add-hook 'cider-mode-hook 'aggressive-indent-mode t)
           (setq cider-repl-display-help-banner nil
-              cider-repl-use-pretty-printing nil
-              cider-dynamic-indentation nil
-              cider-default-cljs-repl 'figwheel
-              cider-cljs-lein-repl
-              "(do (require 'figwheel-sidecar.repl-api)
+                cider-repl-use-pretty-printing nil
+                cider-dynamic-indentation nil
+                cider-default-cljs-repl 'figwheel
+                cider-cljs-lein-repl
+                "(do (require 'figwheel-sidecar.repl-api)
                    (figwheel-sidecar.repl-api/start-figwheel!)
                    (figwheel-sidecar.repl-api/cljs-repl))"))
   :config
@@ -499,6 +504,7 @@ If the new path's directories does not exist, create them."
 ;;(require 'php2-mode)
 
 (use-package php-mode
+  :ensure projectile
   :mode ("\\.php[345]?\\'" "\\.inc\\'" "\\.module\\'")
   :config
   (require 'my-php)
@@ -568,7 +574,7 @@ If the new path's directories does not exist, create them."
 (load custom-file :no-error :no-message)
 
 ;; set back gc threshold
-(setq gc-cons-threshold gc-cons-threshold-old)
+(setq gc-cons-threshold 134217728)
 (setq garbage-collection-messages t)
 
 

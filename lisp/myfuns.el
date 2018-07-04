@@ -35,16 +35,10 @@
 (defun kj/php-namespace ()
   (interactive)
   (when (and buffer-file-name (ignore-errors (projectile-project-root)))
-    (concat
-     "namespace "
-     (string-join
-      (mapcar (lambda (x) (capitalize x))
-              (kj/php-get-namespace buffer-file-name
-                                    (projectile-project-root)
-                                    '()))
-      "\\")
-     ";")
-    ))
+    (mapconcat
+     (lambda (x) (capitalize x))
+     (kj/php-get-namespace buffer-file-name (projectile-project-root) '())
+     "\\")))
 
 (defun kj/php-class-name ()
   (interactive)
