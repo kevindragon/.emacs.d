@@ -297,6 +297,8 @@ If the new path's directories does not exist, create them."
 
 (load "myfuns.el")
 
+(use-package smex)
+
 ;; use ivy
 (use-package ivy
   :config (progn (ivy-mode 1)
@@ -554,6 +556,8 @@ If the new path's directories does not exist, create them."
                (add-hook 'racer-mode-hook #'company-mode)))
 
 (use-package quickrun)
+
+(use-package logview)
 
 ;; load key bindings myself
 (load "keybindings.el")
