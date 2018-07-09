@@ -242,6 +242,9 @@ If the new path's directories does not exist, create them."
     (unless (package-installed-p package)
       (package-install package))))
 
+(use-package exec-path-from-shell
+  ;; :config (exec-path-from-shell-initialize)
+  )
 
 ;; setup yasnippet
 (use-package yasnippet
@@ -319,8 +322,7 @@ If the new path's directories does not exist, create them."
 ;; clojure
 (use-package cider
   :pin melpa-stable
-  :bind (("M-RET s c" . cider-repl-clear-buffer)
-         ([f7] . cider-eval-last-sexp))
+  :bind (([f7] . cider-eval-last-sexp))
   :init (progn
           (add-hook 'cider-mode-hook 'eldoc-mode t)
           ;;(add-hook 'cider-mode-hook 'aggressive-indent-mode t)
@@ -437,11 +439,9 @@ If the new path's directories does not exist, create them."
 
 ;; python
 (use-package elpy
-  :commands elpy-enable
-  :init (with-eval-after-load 'python (elpy-enable))
+  :init (elpy-enable)
   :config
   (progn
-    (elpy-enable)
     (setq python-shell-interpreter "ipython"
           python-shell-interpreter-args "-i --simple-prompt --profile=dev"
           python-shell-interpreter-interactive-arg "-i --simple-prompt")
