@@ -432,7 +432,9 @@ If the new path's directories does not exist, create them."
     (setq org-todo-keywords
           '((sequence "TODO(t)" "|" "DONE(d!)")
             (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f!)")
-            (sequence "|" "CANCELED(c@/!)")))))
+            (sequence "|" "CANCELED(c@/!)")))
+    (setq org-log-done 'time)))
+(use-package htmlize)
 
 ;; markdown
 (use-package markdown-mode)
@@ -578,7 +580,7 @@ If the new path's directories does not exist, create them."
 (load custom-file :no-error :no-message)
 
 ;; set back gc threshold
-(setq gc-cons-threshold 134217728)
+(setq gc-cons-threshold gc-cons-threshold-old)
 (setq garbage-collection-messages t)
 
 
