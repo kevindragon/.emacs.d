@@ -59,15 +59,16 @@
   ;;               :size 10.5)))
   (let ((mypaths
          '("C:/Program Files/Git/bin"
-           "C:/msys64/mingw64/bin"
-           "C:/msys64/usr/bin"
            "C:/Program Files (x86)/Mozilla Firefox/"
            "C:/Program Files (x86)/Google/Chrome/Application"
            "C:/Program Files/Oracle/VirtualBox"
            "C:/Users/jiangkx/AppData/Local/Continuum/anaconda3"
            "C:/Users/jiangkx/AppData/Local/Continuum/anaconda3/Scripts"
            "C:/Program Files/Zeal"
-           "C:/Users/jiangkx/AppData/Roaming/Composer/vendor/bin")))
+           "C:/Users/jiangkx/AppData/Roaming/Composer/vendor/bin"
+           "C:/msys64/usr/bin"
+           ;; "C:/msys64/mingw64/bin"
+           )))
     (setenv "PATH" (concat
                     (mapconcat 'identity mypaths ";") ";"
                     (getenv "PATH")))
@@ -128,6 +129,7 @@ If the new path's directories does not exist, create them."
 
 ;; tab size
 (setq default-tab-width 4)
+(setq tab-width 4)
 (setq-default indent-tabs-mode nil)
 
 ;; Toggle visualization of matching parens
@@ -243,8 +245,9 @@ If the new path's directories does not exist, create them."
       (package-install package))))
 
 (use-package exec-path-from-shell
-  ;; :config (exec-path-from-shell-initialize)
-  )
+  :if (memq window-system '(mac ns w32))
+  :config
+  (exec-path-from-shell-initialize))
 
 ;; setup yasnippet
 (use-package yasnippet
@@ -287,6 +290,7 @@ If the new path's directories does not exist, create them."
 
 ;; ag
 (use-package ag)
+(use-package ripgrep)
 (use-package rg
   :config (rg-enable-default-bindings (kbd "M-s")))
 
@@ -346,18 +350,11 @@ If the new path's directories does not exist, create them."
                                   " repl :headless")))
         (setq cider-lein-parameters lein-params)
         (cider-jack-in)))
-    (use-package inf-clojure
-      :config
-      (progn
-        (defun cider-figwheel-repl ()
-          (interactive)
-          (inf-clojure "lein figwheel"))
-        (defun cider-boot-figwheel-repl ()
-          (interactive)
-          (inf-clojure "boot figwheel repl"))))
+    (setq cider-repl-wrap-history t)
     (when (string-equal system-type "windows-nt")
       (setq cider-jdk-src-paths
             '("C:/Program Files/Java/jdk1.8.0_111/src.zip")))))
+(use-package clj-refactor)
 
 (use-package ensime
   :pin melpa-stable)
@@ -377,6 +374,7 @@ If the new path's directories does not exist, create them."
   :config (setq js2-basic-offset 2))
 (use-package js2-refactor
   :init (add-hook 'js2-mode-hook 'js2-refactor-mode t))
+(use-package tide)
 
 (use-package window-numbering
   :init (add-hook 'after-init-hook 'window-numbering-mode t))
@@ -413,6 +411,7 @@ If the new path's directories does not exist, create them."
 (use-package racket-mode
   :config (setq racket-racket-program "C:/Program Files/Racket/Racket.exe"
                 racket-raco-program "C:/Program Files/Racket/raco.exe"))
+(use-package geiser)
 
 ;; org mode
 (use-package org
@@ -422,18 +421,25 @@ If the new path's directories does not exist, create them."
                     (org-indent-mode 1)
                     (diminish 'org-indent-mode))
 		  t)
+  :bind (("C-c l" . org-store-link)
+         ("C-c a" . org-agenda)
+         ("C-c c" . org-capture)
+         ("C-c b" . org-switchb))
   :config
   (progn
     (setq org-startup-indented t)
     (setq org-src-fontify-natively t)
     (when (string-equal system-type "windows-nt")
-      (setq org-directory "c:/project/orgs"))
+      (setq org-directory "c:/project/orgs")
+      (setq org-agenda-files '("c:/project/orgs/todo.org")))
     (setq org-default-notes-file (concat org-directory "/notes.org"))
     (setq org-todo-keywords
           '((sequence "TODO(t)" "|" "DONE(d!)")
             (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f!)")
             (sequence "|" "CANCELED(c@/!)")))
-    (setq org-log-done 'time)))
+    (setq org-log-done 'time)
+    (setq org-clock-persist 'history)
+    (org-clock-persistence-insinuate)))
 (use-package htmlize)
 
 ;; markdown
@@ -447,22 +453,14 @@ If the new path's directories does not exist, create them."
     (setq python-shell-interpreter "ipython"
           python-shell-interpreter-args "-i --simple-prompt --profile=dev"
           python-shell-interpreter-interactive-arg "-i --simple-prompt")
-    (add-hook 'inferior-python-mode-hook
-              (lambda ()
-                (local-set-key (kbd "C-c C-b C-c")
-                               (lambda ()
-                                 (interactive)
-                                 (let ((comint-buffer-maximum-size 0))
-                                   (comint-clear-buffer)))))
-	      t)
     ;; 解决 Shell Mode(cmd) 下中文乱码问题
     (when (string-equal system-type "windows-nt")
-      (defun kevin/windows-shell-mode-coding ()
-        (set-buffer-file-coding-system 'gbk)
-        (set-buffer-process-coding-system 'gbk 'gbk))
-      (add-hook 'inferior-python-mode-hook
-                'kevin/windows-shell-mode-coding
-		t)
+      ;; (defun kevin/windows-shell-mode-coding ()
+      ;;   (set-buffer-file-coding-system 'gbk)
+      ;;   (set-buffer-process-coding-system 'gbk 'gbk))
+      ;; (add-hook 'inferior-python-mode-hook
+      ;;           'kevin/windows-shell-mode-coding
+      ;;   	t)
       ;; (add-hook 'python-mode-hook
       ;;           (lambda ()
       ;;             (add-hook 'before-save-hook 'elpy-format-code)))
@@ -482,19 +480,27 @@ If the new path's directories does not exist, create them."
                         :before 'advice:ein:notebooklist-open)))
 
 ;; golang
+(use-package company-go)
 (use-package go-mode
   :ensure company
   :config
   (progn
+    (setq-default tab-width 4)
     (add-hook 'go-mode-hook
               (lambda ()
                 (set (make-local-variable 'company-backends) '(company-go))
                 (company-mode))
-	      t)
+	          t)
     (add-hook 'go-mode-hook
               (lambda ()
                 (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports))
-	      t)
+	          t)
+    (add-hook
+     'go-mode-hook
+     #'(lambda()
+         (require 'go-imports)
+	     (define-key go-mode-map "\C-cI" 'go-imports-insert-import)
+	     (define-key go-mode-map "\C-cR" go-imports-reload-packages-list)))
     (use-package go-eldoc
       :init (add-hook 'go-mode-hook 'go-eldoc-setup t))
     (add-hook 'before-save-hook 'gofmt-before-save)))
@@ -512,7 +518,8 @@ If the new path's directories does not exist, create them."
   :mode ("\\.php[345]?\\'" "\\.inc\\'" "\\.module\\'")
   :config
   (require 'my-php)
-  (add-to-list 'company-backends 'kj/company-php-backend))
+  (add-to-list 'company-backends 'kj/company-php-backend)
+  (add-hook 'php-mode-hook 'php-enable-psr2-coding-style))
 
 ;; composer global require "squizlabs/php_codesniffer=*"
 ;; (use-package phpcbf
@@ -522,7 +529,9 @@ If the new path's directories does not exist, create them."
 (use-package phpunit
   :config
   (progn (add-to-list 'auto-mode-alist '("\\.php$'" . phpunit-mode))
-         (setq phpunit-program "php vendor/phpunit/phpunit/phpunit")))
+         (setq phpunit-program "php vendor/phpunit/phpunit/phpunit")
+         (setq phpunit-default-program "php")
+         (setq-default phpunit-args "vendor/phpunit/phpunit/phpunit")))
 
 ;; restclient
 (use-package restclient
@@ -551,11 +560,14 @@ If the new path's directories does not exist, create them."
 (use-package rust-mode
   :bind (:map rust-mode-map
          ("TAB" . company-indent-or-complete-common))
-  :config (setq company-tooltip-align-annotations t))
+  :config (setq company-tooltip-align-annotations t
+                rust-format-on-save t))
 (use-package racer
   :init (progn (add-hook 'rust-mode-hook #'racer-mode)
                (add-hook 'racer-mode-hook #'eldoc-mode)
                (add-hook 'racer-mode-hook #'company-mode)))
+(use-package cargo
+  :hook (rust-mode . cargo-minor-mode))
 
 (use-package quickrun)
 
@@ -580,9 +592,11 @@ If the new path's directories does not exist, create them."
 (load custom-file :no-error :no-message)
 
 ;; set back gc threshold
-(setq gc-cons-threshold gc-cons-threshold-old)
+(setq gc-cons-threshold (* gc-cons-threshold-old 2))
 (setq garbage-collection-messages t)
 
+(custom-set-faces
+ '(font-lock-comment-face ((t (:foreground "light slate gray")))))
 
 ;;; end, settings should be placed above
 ;;;; realy end!!!
