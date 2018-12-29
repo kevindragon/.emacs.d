@@ -427,8 +427,10 @@ If the new path's directories does not exist, create them."
          ("C-c b" . org-switchb))
   :config
   (progn
-    (setq org-startup-indented t)
+    (setq org-startup-indented t
+          org-startup-truncated t)
     (setq org-src-fontify-natively t)
+    (setq-default org-catch-invisible-edits 'smart)
     (when (string-equal system-type "windows-nt")
       (setq org-directory "c:/project/orgs")
       (setq org-agenda-files '("c:/project/orgs/todo.org")))
@@ -495,12 +497,12 @@ If the new path's directories does not exist, create them."
               (lambda ()
                 (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports))
 	          t)
-    (add-hook
-     'go-mode-hook
-     #'(lambda()
-         (require 'go-imports)
-	     (define-key go-mode-map "\C-cI" 'go-imports-insert-import)
-	     (define-key go-mode-map "\C-cR" go-imports-reload-packages-list)))
+    ;; (add-hook
+    ;;  'go-mode-hook
+    ;;  #'(lambda()
+    ;;      (require 'go-imports)
+	;;      (define-key go-mode-map "\C-cI" 'go-imports-insert-import)
+	;;      (define-key go-mode-map "\C-cR" go-imports-reload-packages-list)))
     (use-package go-eldoc
       :init (add-hook 'go-mode-hook 'go-eldoc-setup t))
     (add-hook 'before-save-hook 'gofmt-before-save)))
