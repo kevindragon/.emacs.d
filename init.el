@@ -457,12 +457,12 @@ If the new path's directories does not exist, create them."
           python-shell-interpreter-interactive-arg "-i --simple-prompt")
     ;; 解决 Shell Mode(cmd) 下中文乱码问题
     (when (string-equal system-type "windows-nt")
-      ;; (defun kevin/windows-shell-mode-coding ()
-      ;;   (set-buffer-file-coding-system 'gbk)
-      ;;   (set-buffer-process-coding-system 'gbk 'gbk))
-      ;; (add-hook 'inferior-python-mode-hook
-      ;;           'kevin/windows-shell-mode-coding
-      ;;   	t)
+      (defun kevin/windows-shell-mode-coding ()
+        (set-buffer-file-coding-system 'gbk)
+        (set-buffer-process-coding-system 'gbk 'gbk))
+      (add-hook 'inferior-python-mode-hook
+                'kevin/windows-shell-mode-coding
+        	t)
       ;; (add-hook 'python-mode-hook
       ;;           (lambda ()
       ;;             (add-hook 'before-save-hook 'elpy-format-code)))
@@ -474,12 +474,16 @@ If the new path's directories does not exist, create them."
          (python-mode . anaconda-eldoc-mode)))
 (use-package ein
   :defer t
-  :config (with-eval-after-load "ein"
-            (defun advice:ein:notebooklist-open (&rest args)
-              (call-interactively 'ein:force-ipython-version-check)
-              'before)
-            (advice-add 'ein:notebooklist-open
-                        :before 'advice:ein:notebooklist-open)))
+  :config
+  ;; (with-eval-after-load "ein"
+  ;;   (defun advice:ein:notebooklist-open (&rest args)
+  ;;     (call-interactively 'ein:force-ipython-version-check)
+  ;;     'before)
+  ;;   (advice-add 'ein:notebooklist-open
+  ;;               :before 'advice:ein:notebooklist-open))
+  (require 'ein)
+  (require 'ein-notebook)
+  (require 'ein-subpackages))
 
 ;; golang
 (use-package company-go)
@@ -521,7 +525,8 @@ If the new path's directories does not exist, create them."
   :config
   (require 'my-php)
   (add-to-list 'company-backends 'kj/company-php-backend)
-  (add-hook 'php-mode-hook 'php-enable-psr2-coding-style))
+  (add-hook 'php-mode-hook 'php-enable-psr2-coding-style)
+  (add-hook 'php-mode-hook 'symbol-overlay-mode))
 
 ;; composer global require "squizlabs/php_codesniffer=*"
 ;; (use-package phpcbf
