@@ -366,7 +366,10 @@ If the new path's directories does not exist, create them."
           (setq web-mode-markup-indent-offset 2)
           (setq web-mode-css-indent-offset 2)
           (setq web-mode-code-indent-offset 2)
-          (setq web-mode-enable-current-column-highlight t)))
+          (setq web-mode-enable-current-column-highlight t))
+  :config
+  (setq web-mode-script-padding 0
+        web-mode-style-padding 0))
 
 ;; js mode
 (use-package js2-mode
@@ -450,14 +453,22 @@ If the new path's directories does not exist, create them."
 ;; python
 (use-package elpy
   :init (elpy-enable)
+  :bind (([f7] . elpy-shell-send-statement))
   :config
   (progn
+    ;; (setq python-shell-interpreter "jupyter"
+    ;;       python-shell-interpreter-args "console --simple-prompt --profile=dev"
+    ;;       python-shell-prompt-detect-failure-warning nil)
+    ;; (add-to-list 'python-shell-completion-native-disabled-interpreters
+    ;;              "jupyter")
     (setq python-shell-interpreter "ipython"
           python-shell-interpreter-args "-i --simple-prompt --profile=dev"
           python-shell-interpreter-interactive-arg "-i --simple-prompt")
     ;; 解决 Shell Mode(cmd) 下中文乱码问题
     (when (string-equal system-type "windows-nt")
       (defun kevin/windows-shell-mode-coding ()
+        (add-to-list (make-local-variable 'company-backends)
+                     'elpy-company-backend)
         (set-buffer-file-coding-system 'gbk)
         (set-buffer-process-coding-system 'gbk 'gbk))
       (add-hook 'inferior-python-mode-hook
@@ -496,11 +507,11 @@ If the new path's directories does not exist, create them."
               (lambda ()
                 (set (make-local-variable 'company-backends) '(company-go))
                 (company-mode))
-	          t)
+	      t)
     (add-hook 'go-mode-hook
               (lambda ()
                 (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports))
-	          t)
+	      t)
     ;; (add-hook
     ;;  'go-mode-hook
     ;;  #'(lambda()
@@ -546,7 +557,9 @@ If the new path's directories does not exist, create them."
 
 ;; treemacs
 (use-package treemacs
-  ;; :config (setq treemacs-width 25)
+  :config
+  (custom-set-variables '(treemacs-silent-refresh t))
+  ;;(setq treemacs-width 25)
   )
 
 ;; key freq

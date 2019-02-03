@@ -60,3 +60,15 @@
      (s-replace
       (or (ignore-errors (projectile-project-root)) "")
       "" buffer-file-name))))
+
+;;;; web mode
+(defun kj/web-mode-indent-to (num)
+  (setq web-mode-markup-indent-offset num)
+  (setq web-mode-css-indent-offset num)
+  (setq web-mode-code-indent-offset num))
+(defun kj/web-mode-indent-4 ()
+  (interactive)
+  (kj/web-mode-indent-to 4))
+(defun kj/web-mode-indent-2 ()
+  (interactive)
+  (kj/web-mode-indent-to 2))

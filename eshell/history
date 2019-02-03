@@ -8,3 +8,12 @@ exit
 exit
 exit
 ls
+npm run build
+npm run build
+npm run build
+npm run build
+cd ..
+npm run build
+npm run build
+npm run build
+npm run build
