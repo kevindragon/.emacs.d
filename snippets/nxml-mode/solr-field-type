@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: solr field type
+# key: solrfieldtype
+# --
+<fieldType name="${1:text_name}" class="${2:solr.TextField}" positionIncrementGap="${3:100}">
+  <analyzer$4>
+    <tokenizer class="${5:solr.StandardTokenizerFactory}"$6/>
+    ${7:<filter class="solr.LowerCaseFilterFactory"/>}
+  </analyzer>
+</fieldType>
+$0

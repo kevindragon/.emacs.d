@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: solr field
+# key: solrfield
+# --
+<field name="$1" type="$2" indexed="${3:true}" stored="${4:true}"/>$0

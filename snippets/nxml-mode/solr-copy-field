@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: solr copy field
+# key: solrcopyfield
+# --
+<copyField source="$1" dest="$2"/>$0

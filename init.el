@@ -593,6 +593,9 @@ If the new path's directories does not exist, create them."
 
 (use-package logview)
 
+(use-package docker)
+(use-package dockerfile-mode)
+
 ;; load key bindings myself
 (load "keybindings.el")
 
