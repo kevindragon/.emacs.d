@@ -12,7 +12,7 @@
  '(org-agenda-files (quote ("c:/project/orgs/todo.org")))
  '(package-selected-packages
    (quote
-    (omnisharp docker dockerfile-mode rust-mode go-autocomplete quickrun clj-refactor cider realgud company-go go-eldoc go-imports go-mode tide geiser ripgrep htmlize exec-path-from-shell smex logview inf-clojure zeal-at-point yasnippet-snippets yaml-mode window-numbering which-key web-mode use-package treemacs symbol-overlay rainbow-delimiters racket-mode py-autopep8 projectile origami magit keyfreq js2-refactor ensime dumb-jump diminish counsel anaconda-mode aggressive-indent ag)))
+    (omnisharp docker dockerfile-mode rust-mode go-autocomplete quickrun clj-refactor realgud company-go go-eldoc go-imports go-mode tide geiser ripgrep htmlize exec-path-from-shell smex logview inf-clojure zeal-at-point yasnippet-snippets yaml-mode window-numbering which-key web-mode use-package treemacs symbol-overlay rainbow-delimiters racket-mode py-autopep8 projectile origami magit keyfreq js2-refactor ensime dumb-jump diminish counsel anaconda-mode aggressive-indent ag)))
  '(treemacs-silent-refresh t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
