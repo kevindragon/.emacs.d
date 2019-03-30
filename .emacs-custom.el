@@ -9,10 +9,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("c:/project/orgs/todo.org")))
+ '(org-agenda-files (quote ("c:/workspace/orgs/todo.org")))
  '(package-selected-packages
    (quote
-    (omnisharp docker dockerfile-mode rust-mode go-autocomplete quickrun clj-refactor realgud company-go go-eldoc go-imports go-mode tide geiser ripgrep htmlize exec-path-from-shell smex logview inf-clojure zeal-at-point yasnippet-snippets yaml-mode window-numbering which-key web-mode use-package treemacs symbol-overlay rainbow-delimiters racket-mode py-autopep8 projectile origami magit keyfreq js2-refactor ensime dumb-jump diminish counsel anaconda-mode aggressive-indent ag)))
+    (treemacs omnisharp docker dockerfile-mode go-autocomplete quickrun realgud go-eldoc go-imports go-mode tide geiser htmlize exec-path-from-shell logview py-autopep8 ensime diminish counsel)))
  '(treemacs-silent-refresh t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

@@ -300,7 +300,8 @@ If the new path's directories does not exist, create them."
   :init (add-hook 'after-init-hook 'projectile-mode t)
   :config
   (setq projectile-mode-line
-        '(:eval (format "[%s]" (projectile-project-name)))))
+        '(:eval (format "[%s]" (projectile-project-name))))
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 
 (load "myfuns.el")
 
