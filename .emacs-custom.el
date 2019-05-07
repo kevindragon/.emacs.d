@@ -12,7 +12,7 @@
  '(org-agenda-files (quote ("c:/workspace/orgs/todo.org")))
  '(package-selected-packages
    (quote
-    (treemacs omnisharp docker dockerfile-mode go-autocomplete quickrun realgud go-eldoc go-imports go-mode tide geiser htmlize exec-path-from-shell logview py-autopep8 ensime diminish counsel)))
+    (intero python-pytest omnisharp docker dockerfile-mode go-autocomplete quickrun realgud go-eldoc go-imports go-mode tide geiser htmlize exec-path-from-shell logview py-autopep8 ensime diminish)))
  '(treemacs-silent-refresh t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

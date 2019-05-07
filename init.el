@@ -268,6 +268,7 @@ If the new path's directories does not exist, create them."
   ;; (define-auto-insert "\\.el$" ["default-lisp.el" ha/autoinsert-yas-expand])
   ;; (define-auto-insert "\\.sh$" ["default-sh.sh" ha/autoinsert-yas-expand])
   (define-auto-insert "\\.php$" ["template.php" autoinsert-yas-expand])
+  (define-auto-insert "\\.py$" ["template.py" autoinsert-yas-expand])
   ;; (define-auto-insert "/bin/"  ["default-sh.sh" ha/autoinsert-yas-expand])
   ;; (define-auto-insert "\\.html?$"
   ;;                     ["default-html.html" ha/autoinsert-yas-expand])
@@ -454,7 +455,8 @@ If the new path's directories does not exist, create them."
 ;; python
 (use-package elpy
   :init (elpy-enable)
-  :bind (([f7] . elpy-shell-send-statement))
+  :bind (:map elpy-mode-map
+              ([f7] . elpy-shell-send-statement))
   :config
   (progn
     ;; (setq python-shell-interpreter "jupyter"
@@ -496,6 +498,7 @@ If the new path's directories does not exist, create them."
   (require 'ein)
   (require 'ein-notebook)
   (require 'ein-subpackages))
+(use-package python-pytest)
 
 ;; golang
 (use-package company-go)
@@ -580,7 +583,7 @@ If the new path's directories does not exist, create them."
 
 (use-package rust-mode
   :bind (:map rust-mode-map
-         ("TAB" . company-indent-or-complete-common))
+              ("TAB" . company-indent-or-complete-common))
   :config (setq company-tooltip-align-annotations t
                 rust-format-on-save t))
 (use-package racer
@@ -589,6 +592,9 @@ If the new path's directories does not exist, create them."
                (add-hook 'racer-mode-hook #'company-mode)))
 (use-package cargo
   :hook (rust-mode . cargo-minor-mode))
+
+(use-package intero
+  :init (intero-global-mode 1))
 
 (use-package quickrun)
 
@@ -599,6 +605,9 @@ If the new path's directories does not exist, create them."
 
 ;; load key bindings myself
 (load "keybindings.el")
+
+(require 'lazy-search)
+(global-set-key (kbd "C-x M-s") 'lazy-search)
 
 ;;set transparent effect
 (setq alpha-list '((100 100) (95 65) (85 55) (75 45) (65 35)))

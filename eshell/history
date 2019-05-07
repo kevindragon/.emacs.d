@@ -17,3 +17,25 @@ npm run build
 npm run build
 npm run build
 npm run build
+ls
+scp target/uberjar/wiki-synonym-0.1.0-SNAPSHOT-standalone.jar use1\jiangkx@10.94.163.137:/data3/wiki
+cd ../../
+scp target/uberjar/wiki-synonym.jar titan@10.123.4.221:/data1/titan/kevin/workspace/wiki-synonym
+lein uberjar
+scp target/uberjar/wiki-synonym.jar titan@10.123.4.221:/data1/titan/kevin/workspace/wiki-synonym
+lein uberjar
+scp target/uberjar/wiki-synonym.jar titan@10.123.4.221:/data1/titan/kevin/workspace/wiki-synonym
+lein uberjar
+scp target/uberjar/wiki-synonym.jar titan@10.123.4.221:/data1/titan/kevin/workspace/wiki-synonym
+lein uberjar
+scp target/uberjar/wiki-synonym.jar titan@10.123.4.221:/data1/titan/kevin/workspace/wiki-synonym
+lein uberjar
+scp target/uberjar/wiki-synonym.jar titan@10.123.4.221:/data1/titan/kevin/workspace/wiki-synonym
+lein uberjar
+scp target/uberjar/wiki-synonym.jar titan@10.123.4.221:/data1/titan/kevin/workspace/wiki-synonym
+lein uberjar
+scp target/uberjar/wiki-synonym.jar use1\\jiangkx@10.94.163.137:/home/use1/jiangkx/workspace/wiki-synonym
+lein uberjar
+scp target/uberjar/wiki-synonym.jar use1\\jiangkx@10.94.163.137:/home/use1/jiangkx/workspace/wiki-synonym
+scp target/uberjar/wiki-synonym.jar use1\\jiangkx@10.94.163.137:/home/use1/jiangkx/workspace/wiki-synonym
+scp target/uberjar/wiki-synonym.jar use1\\jiangkx@10.94.163.137:/home/use1/jiangkx/workspace/wiki-synonym
