@@ -454,7 +454,11 @@ If the new path's directories does not exist, create them."
 
 ;; python
 (use-package elpy
-  :init (elpy-enable)
+  ;;:ensure t
+  ;;:defer t
+  :init
+  ;;(advice-add 'python-mode :before 'elpy-enable)
+  (elpy-enable)
   :bind (:map elpy-mode-map
               ([f7] . elpy-shell-send-statement))
   :config
@@ -472,15 +476,18 @@ If the new path's directories does not exist, create them."
       (defun kevin/windows-shell-mode-coding ()
         (add-to-list (make-local-variable 'company-backends)
                      'elpy-company-backend)
-        (set-buffer-file-coding-system 'gbk)
-        (set-buffer-process-coding-system 'gbk 'gbk))
+        ;;(set-buffer-file-coding-system 'gbk)
+        ;;(set-buffer-process-coding-system 'gbk 'gbk)
+        (set-buffer-file-coding-system 'utf-8)
+        (set-buffer-process-coding-system 'utf-8 'utf-8))
       (add-hook 'inferior-python-mode-hook
                 'kevin/windows-shell-mode-coding
         	t)
       ;; (add-hook 'python-mode-hook
       ;;           (lambda ()
       ;;             (add-hook 'before-save-hook 'elpy-format-code)))
-      )))
+      )
+    ))
 (use-package py-autopep8
   :hook elpy-mode-hook)
 (use-package anaconda-mode

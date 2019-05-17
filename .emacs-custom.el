@@ -12,7 +12,7 @@
  '(org-agenda-files (quote ("c:/workspace/orgs/todo.org")))
  '(package-selected-packages
    (quote
-    (intero python-pytest omnisharp docker dockerfile-mode go-autocomplete quickrun realgud go-eldoc go-imports go-mode tide geiser htmlize exec-path-from-shell logview py-autopep8 ensime diminish)))
+    (ag aggressive-indent anaconda-mode cargo cider clj-refactor clojure-mode company company-go counsel csharp-mode dash dumb-jump ein find-file-in-project flycheck haskell-mode hexo highlight-indentation inf-clojure ivy js2-mode js2-refactor json-mode keyfreq magit markdown-mode markdown-preview-mode meghanada origami php-mode phpunit projectile pyvenv racer racket-mode rainbow-delimiters ranger restclient rg ripgrep rust-mode sbt-mode scala-mode swiper treemacs use-package vue-html-mode web-mode which-key window-numbering yaml-mode yasnippet yasnippet-snippets zeal-at-point intero python-pytest omnisharp docker dockerfile-mode go-autocomplete quickrun realgud go-eldoc go-imports go-mode tide htmlize exec-path-from-shell logview py-autopep8 ensime diminish)))
  '(treemacs-silent-refresh t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
