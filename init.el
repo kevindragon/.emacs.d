@@ -492,7 +492,8 @@ If the new path's directories does not exist, create them."
   :hook elpy-mode-hook)
 (use-package anaconda-mode
   :hook ((python-mode . anaconda-mode)
-         (python-mode . anaconda-eldoc-mode)))
+         (python-mode . anaconda-eldoc-mode)
+         (python-mode . symbol-overlay-mode)))
 (use-package ein
   :defer t
   :config
@@ -609,6 +610,9 @@ If the new path's directories does not exist, create them."
 
 (use-package docker)
 (use-package dockerfile-mode)
+
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
 
 ;; load key bindings myself
 (load "keybindings.el")
