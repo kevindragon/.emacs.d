@@ -437,8 +437,8 @@ If the new path's directories does not exist, create them."
     (setq org-src-fontify-natively t)
     (setq-default org-catch-invisible-edits 'smart)
     (when (string-equal system-type "windows-nt")
-      (setq org-directory "c:/project/orgs")
-      (setq org-agenda-files '("c:/project/orgs/todo.org")))
+      (setq org-directory "c:/workspace/orgs")
+      (setq org-agenda-files '("c:/workspace/orgs/todo.org")))
     (setq org-default-notes-file (concat org-directory "/notes.org"))
     (setq org-todo-keywords
           '((sequence "TODO(t)" "|" "DONE(d!)")
@@ -616,6 +616,8 @@ If the new path's directories does not exist, create them."
 
 ;; load key bindings myself
 (load "keybindings.el")
+
+(load "randomize-region.el")
 
 (require 'lazy-search)
 (global-set-key (kbd "C-x M-s") 'lazy-search)
