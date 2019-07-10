@@ -363,7 +363,7 @@ If the new path's directories does not exist, create them."
 
 ;; web mode
 (use-package web-mode
-  :mode ("\\.tpl$" "\\.[agj]sp$" "\\.html?$" "\\.vue$" "\\.erb$")
+  :mode ("\\.tpl$" "\\.[agj]sp$" "\\.html?$" "\\.erb$")
   :init (progn
           (setq web-mode-markup-indent-offset 2)
           (setq web-mode-css-indent-offset 2)
@@ -380,6 +380,8 @@ If the new path's directories does not exist, create them."
 (use-package js2-refactor
   :init (add-hook 'js2-mode-hook 'js2-refactor-mode t))
 (use-package tide)
+
+(use-package vue-mode)
 
 (use-package window-numbering
   :init (add-hook 'after-init-hook 'window-numbering-mode t))
@@ -589,15 +591,32 @@ If the new path's directories does not exist, create them."
   :init (add-hook 'ruby-mode-hook 'robe-mode)
   :config (add-to-list 'company-backends 'company-robe))
 
+(use-package lsp-mode
+  :hook ((rust-mode . lsp)
+         (css-mode . lsp)
+         (vue-mode . lsp))
+  :commands lsp)
+;; (use-package lsp-ui
+;;   :commands lsp-ui-mode
+;;   :config (lsp-ui-sideline-enable nil))
+(use-package company-lsp :commands company-lsp)
+;; (use-package helm-lsp :commands helm-lsp-workspace-symbol)
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+;; optionally if you want to use debugger
+(use-package dap-mode)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
 (use-package rust-mode
-  :bind (:map rust-mode-map
-              ("TAB" . company-indent-or-complete-common))
-  :config (setq company-tooltip-align-annotations t
-                rust-format-on-save t))
-(use-package racer
-  :init (progn (add-hook 'rust-mode-hook #'racer-mode)
-               (add-hook 'racer-mode-hook #'eldoc-mode)
-               (add-hook 'racer-mode-hook #'company-mode)))
+  ;; :bind (:map rust-mode-map
+  ;;             ("TAB" . company-indent-or-complete-common))
+  :config
+  ;; (setq company-tooltip-align-annotations t
+  ;;       rust-format-on-save t)
+  )
+;; (use-package racer
+;;   :init (progn (add-hook 'rust-mode-hook #'racer-mode)
+;;                (add-hook 'racer-mode-hook #'eldoc-mode)
+;;                (add-hook 'racer-mode-hook #'company-mode)))
 (use-package cargo
   :hook (rust-mode . cargo-minor-mode))
 
