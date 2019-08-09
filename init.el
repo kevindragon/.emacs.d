@@ -94,7 +94,7 @@
 (menu-bar-mode 0)
 ;; disable scroll bar
 (scroll-bar-mode 0)
-(display-time-mode 1)
+(display-time-mode -1)
 (setq display-time-24hr-format t)
 (setq display-time-day-and-date t)
 ;;(transient-mark-mode t)
@@ -125,7 +125,7 @@ If the new path's directories does not exist, create them."
 (save-place-mode 1)
 
 ;; set high kill ring
-(setq-default kill-ring-max 100000)
+(setq-default kill-ring-max 200000)
 
 ;; tab size
 (setq default-tab-width 4)
@@ -184,70 +184,16 @@ If the new path's directories does not exist, create them."
 (setq use-package-expand-minimally t)
 (setq use-package-enable-imenu-support t)
 
-;;; package
-(defun install-packages ()
-  (interactive)
-  (setq package-list
-        '(better-defaults
-          ;;cnfonts
-          auto-complete
-          company
-          yasnippet
-          yasnippet-snippets
-          scala-mode
-          sbt-mode
-          which-key
-          exec-path-from-shell
-          clojure-mode
-          inf-clojure
-          cider
-          cider-decompile
-          paredit
-          ensime
-          elpy
-          anaconda-mode
-          py-autopep8
-          ein
-          ivy
-          swiper
-          counsel
-          smex
-          markdown-mode
-          magit
-          web-mode
-          js2-mode
-          rjsx-mode
-          js2-refactor
-          undo-tree
-          json-mode
-          aggressive-indent
-          window-numbering
-          projectile
-          rainbow-delimiters
-          highlight-symbol
-          highlight-thing
-          origami
-          ranger
-          go-mode
-          image+
-          diminish
-          hexo
-          treemacs
-          keyfreq
-          ;;benchmark-init
-          ))
-  ;; fetch the list of packages available
-  (unless package-archive-contents
-    (package-refresh-contents))
-  ;; install the missing package-list
-  (dolist (package package-list)
-    (unless (package-installed-p package)
-      (package-install package))))
-
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns w32))
   :config
   (exec-path-from-shell-initialize))
+
+(use-package powerline
+  :init (powerline-default-theme))
+
+;; (use-package flycheck
+;;   :init (global-flycheck-mode))
 
 ;; setup yasnippet
 (use-package yasnippet
@@ -415,10 +361,10 @@ If the new path's directories does not exist, create them."
 (use-package yaml-mode)
 
 ;; Racket
-(use-package racket-mode
-  :config (setq racket-racket-program "C:/Program Files/Racket/Racket.exe"
-                racket-raco-program "C:/Program Files/Racket/raco.exe"))
-(use-package geiser)
+;; (use-package racket-mode
+;;   :config (setq racket-racket-program "C:/Program Files/Racket/Racket.exe"
+;;                 racket-raco-program "C:/Program Files/Racket/raco.exe"))
+;; (use-package geiser)
 
 ;; org mode
 (use-package org
@@ -509,6 +455,9 @@ If the new path's directories does not exist, create them."
   (require 'ein-notebook)
   (require 'ein-subpackages))
 (use-package python-pytest)
+;; (use-package flycheck-pycheckers
+;;   :config (with-eval-after-load 'flycheck
+;;             (add-hook 'flycheck-mode-hook #'flycheck-pycheckers-setup)))
 
 ;; golang
 (use-package company-go)
@@ -539,6 +488,29 @@ If the new path's directories does not exist, create them."
 
 ;; set ring sounds
 ;; (require 'alarm)
+
+
+;;; java
+(use-package meghanada
+  :config
+  (add-hook 'java-mode-hook
+            (lambda ()
+              ;; meghanada-mode on
+              (meghanada-mode t)
+              ;; enable telemetry
+              (meghanada-telemetry-enable t)
+              (flycheck-mode +1)
+              (setq c-basic-offset 2)
+              ;; use code format
+              (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)))
+  (cond
+   ((eq system-type 'windows-nt)
+    ;; (setq meghanada-java-path (expand-file-name "bin/java.exe" (getenv "JAVA_HOME")))
+    (setq meghanada-maven-path "mvn.cmd"))
+   (t
+    (setq meghanada-java-path "java")
+    ;; (setq meghanada-maven-path "mvn")
+    )))
 
 
 ;; php
@@ -623,12 +595,28 @@ If the new path's directories does not exist, create them."
 (use-package intero
   :init (intero-global-mode 1))
 
+;; (use-package dante
+;;   ;; :ensure t
+;;   :after haskell-mode
+;;   :commands 'dante-mode
+;;   :init
+;;   (add-hook 'haskell-mode-hook 'flycheck-mode)
+;;   (add-hook 'haskell-mode-hook 'dante-mode)
+;;   (add-hook 'dante-mode-hook
+;;             '(lambda () (flycheck-add-next-checker 'haskell-dante
+;;                                                    '(warning . haskell-hlint)))))
+
+(use-package xquery-mode)
+
 (use-package quickrun)
 
 (use-package logview)
 
 (use-package docker)
 (use-package dockerfile-mode)
+
+(use-package company-tabnine
+  :config (add-to-list 'company-backends #'company-tabnine))
 
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
