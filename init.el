@@ -26,12 +26,7 @@
     (if (> (length fname) max-len)
         (setq fname (concat "..." (substring fname (- (length fname) max-len)))))
     fname))
-(if (display-graphic-p)
-    (setq frame-title-format '("Kevin@"(:eval (frame-title-string))))
-  (when (or (string= (getenv "TERM") "dumb")
-            (string-match "^xterm" (getenv "TERM")))
-    (require 'xterm-title)
-    (xterm-title-mode 1)))
+(setq frame-title-format '("Kevin@"(:eval (frame-title-string))))
 
 ;; set font
 (when (member "Courier New" (font-family-list))
@@ -236,6 +231,13 @@ If the new path's directories does not exist, create them."
 ;; mode line mode names settings
 (use-package diminish
   :diminish ((abbrev-mode . " A")))
+
+(when (and (not (display-graphic-p))
+           (or (string= (getenv "TERM") "dumb")
+               (string-match "^xterm" (getenv "TERM"))))
+  (require 'xterm-title)
+  (xterm-title-mode 1)
+  (diminish 'xterm-title-mode nil))
 
 (use-package magit
   :bind ("M-n g" . magit-status)
