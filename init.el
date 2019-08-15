@@ -189,8 +189,15 @@ If the new path's directories does not exist, create them."
   :config
   (exec-path-from-shell-initialize))
 
+(use-package spacemacs-theme)
+(use-package dracula-theme)
+(if (display-graphic-p)
+    (load-theme 'spacemacs-light)
+  (load-theme 'dracula))
+
 (use-package powerline
-  :init (powerline-default-theme))
+  :init (powerline-default-theme)
+  :config (setq powerline-display-buffer-size nil))
 
 ;; (use-package flycheck
 ;;   :init (global-flycheck-mode))
@@ -435,13 +442,15 @@ If the new path's directories does not exist, create them."
       ;;           (lambda ()
       ;;             (add-hook 'before-save-hook 'elpy-format-code)))
       )
+    (add-hook 'python-mode-hook (lambda() (setq mode-name "Py")))
     ))
 (use-package py-autopep8
   :hook elpy-mode-hook)
 (use-package anaconda-mode
   :hook ((python-mode . anaconda-mode)
          (python-mode . anaconda-eldoc-mode)
-         (python-mode . symbol-overlay-mode)))
+         (python-mode . symbol-overlay-mode))
+  :diminish (anaconda-mode "A"))
 (use-package ein
   :defer t
   :config

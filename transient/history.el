@@ -13,15 +13,16 @@
  (magit-fetch nil)
  (magit-gitignore nil)
  (magit-log
-  ("-n256" "--graph" "--color" "--decorate")
   ("-n256" "--graph" "--decorate")
+  ("-n256" "--graph" "--color" "--decorate")
   ("-n256" "--graph" "--decorate" "++header" "--stat")
   (("--" "reranker/reranker_proximity_boost_v2.py")))
  (magit-merge nil
               ("--no-ff"))
  (magit-pull nil)
- (magit-push nil
-             ("--force"))
+ (magit-push
+  ("--force")
+  nil)
  (magit-rebase nil)
  (magit-remote
   ("-f"))
