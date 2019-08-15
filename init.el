@@ -19,18 +19,19 @@
 ;; set location on frame title
 (defun frame-title-string ()
   "Return the file name of current buffer, using ~ if under home directory"
-  (let ((fname (or
-                (buffer-file-name (current-buffer))
-                (buffer-name)))
+  (let ((fname (or (buffer-file-name (current-buffer)) (buffer-name)))
         (max-len 100))
     (when (string-match (getenv "HOME") fname)
       (setq fname (replace-match "~" t t fname)))
     (if (> (length fname) max-len)
-        (setq fname
-              (concat "..."
-                      (substring fname (- (length fname) max-len)))))
+        (setq fname (concat "..." (substring fname (- (length fname) max-len)))))
     fname))
-(setq frame-title-format '("Kevin@"(:eval (frame-title-string))))
+(if (display-graphic-p)
+    (setq frame-title-format '("Kevin@"(:eval (frame-title-string))))
+  (when (or (string= (getenv "TERM") "dumb")
+            (string-match "^xterm" (getenv "TERM")))
+    (require 'xterm-title)
+    (xterm-title-mode 1)))
 
 ;; set font
 (when (member "Courier New" (font-family-list))
