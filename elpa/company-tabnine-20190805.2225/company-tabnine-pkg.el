@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "company-tabnine" "20190805.2225" "A company-mode backend for TabNine" '((emacs "25") (company "0.9.3") (cl-lib "0.5") (dash "2.16.0") (s "1.12.0") (unicode-escape "1.1")) :commit "c7358252285d6bb835ce7559c78c73c27133ac19" :keywords '("convenience") :authors '(("Tommy Xiang" . "tommyx058@gmail.com")) :maintainer '("Tommy Xiang" . "tommyx058@gmail.com") :url "https://github.com/TommyX12/company-tabnine/")

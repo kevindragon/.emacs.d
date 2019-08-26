@@ -188,8 +188,8 @@ If the new path's directories does not exist, create them."
 (use-package spacemacs-theme)
 (use-package dracula-theme)
 (if (display-graphic-p)
-    (load-theme 'spacemacs-light)
-  (load-theme 'dracula))
+    (load-theme 'spacemacs-light t)
+  (load-theme 'dracula t))
 
 (use-package powerline
   :init (powerline-default-theme)
@@ -223,9 +223,14 @@ If the new path's directories does not exist, create them."
   ;;                     ["default-html.html" ha/autoinsert-yas-expand])
   )
 
+(use-package company-quickhelp)
+
 ;; enable company
 (use-package company
-  :init (setq company-dabbrev-downcase nil))
+  :init (setq company-dabbrev-downcase nil)
+  :config
+  (setq company-minimum-prefix-length 2)
+  (add-hook 'company-mode-hook 'company-quickhelp-mode))
 (add-hook 'after-init-hook 'global-company-mode)
 
 ;; mode line mode names settings
@@ -317,9 +322,12 @@ If the new path's directories does not exist, create them."
 (use-package ensime
   :pin melpa-stable)
 
+;; (use-package vue-mode)
+(use-package lsp-vue)
+
 ;; web mode
 (use-package web-mode
-  :mode ("\\.tpl$" "\\.[agj]sp$" "\\.html?$" "\\.erb$")
+  :mode ("\\.tpl$" "\\.[agj]sp$" "\\.html?$" "\\.erb$" "\\.vue")
   :init (progn
           (setq web-mode-markup-indent-offset 2)
           (setq web-mode-css-indent-offset 2)
@@ -327,7 +335,9 @@ If the new path's directories does not exist, create them."
           (setq web-mode-enable-current-column-highlight t))
   :config
   (setq web-mode-script-padding 0
-        web-mode-style-padding 0))
+        web-mode-style-padding 0)
+  (add-hook 'web-mode-hook 'company-mode)
+  (add-hook 'web-mode-hook 'lsp-vue-enable))
 
 ;; js mode
 (use-package js2-mode
@@ -336,8 +346,6 @@ If the new path's directories does not exist, create them."
 (use-package js2-refactor
   :init (add-hook 'js2-mode-hook 'js2-refactor-mode t))
 (use-package tide)
-
-(use-package vue-mode)
 
 (use-package window-numbering
   :init (add-hook 'after-init-hook 'window-numbering-mode t))
@@ -497,36 +505,8 @@ If the new path's directories does not exist, create them."
       :init (add-hook 'go-mode-hook 'go-eldoc-setup t))
     (add-hook 'before-save-hook 'gofmt-before-save)))
 
-
 ;; set ring sounds
 ;; (require 'alarm)
-
-
-;;; java
-(use-package meghanada
-  :config
-  (add-hook 'java-mode-hook
-            (lambda ()
-              ;; meghanada-mode on
-              (meghanada-mode t)
-              ;; enable telemetry
-              (meghanada-telemetry-enable t)
-              (flycheck-mode +1)
-              (setq c-basic-offset 2)
-              ;; use code format
-              (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)))
-  (cond
-   ((eq system-type 'windows-nt)
-    ;; (setq meghanada-java-path (expand-file-name "bin/java.exe" (getenv "JAVA_HOME")))
-    (setq meghanada-maven-path "mvn.cmd"))
-   (t
-    (setq meghanada-java-path "java")
-    ;; (setq meghanada-maven-path "mvn")
-    )))
-
-
-;; php
-;;(require 'php2-mode)
 
 (use-package php-mode
   :ensure projectile
@@ -556,9 +536,7 @@ If the new path's directories does not exist, create them."
 ;; treemacs
 (use-package treemacs
   :config
-  (custom-set-variables '(treemacs-silent-refresh t))
-  ;;(setq treemacs-width 25)
-  )
+  (custom-set-variables '(treemacs-silent-refresh t)))
 
 ;; key freq
 (use-package keyfreq
@@ -580,10 +558,12 @@ If the new path's directories does not exist, create them."
          (css-mode . lsp)
          (vue-mode . lsp))
   :commands lsp)
-;; (use-package lsp-ui
-;;   :commands lsp-ui-mode
-;;   :config (lsp-ui-sideline-enable nil))
-(use-package company-lsp :commands company-lsp)
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :config (lsp-ui-sideline-enable nil))
+(use-package company-lsp
+  :commands company-lsp
+  :config (setq company-lsp-enable-snippet t))
 ;; (use-package helm-lsp :commands helm-lsp-workspace-symbol)
 (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 ;; optionally if you want to use debugger
