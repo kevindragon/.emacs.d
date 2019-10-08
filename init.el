@@ -415,75 +415,75 @@ If the new path's directories does not exist, create them."
     (org-clock-persistence-insinuate)))
 (use-package htmlize)
 
-;; markdown
+;;; markdown
 (use-package markdown-mode)
 
-;; python
-;; (use-package elpy
-;;   ;;:ensure t
-;;   ;;:defer t
-;;   :init
-;;   ;;(advice-add 'python-mode :before 'elpy-enable)
-;;   (elpy-enable)
-;;   :bind (:map elpy-mode-map
-;;               ([f7] . elpy-shell-send-statement))
-;;   :config
-;;   (progn
-;;     ;; (setq python-shell-interpreter "jupyter"
-;;     ;;       python-shell-interpreter-args "console --simple-prompt --profile=dev"
-;;     ;;       python-shell-prompt-detect-failure-warning nil)
-;;     ;; (add-to-list 'python-shell-completion-native-disabled-interpreters
-;;     ;;              "jupyter")
-;;     (setq python-shell-interpreter "ipython"
-;;           python-shell-interpreter-args "-i --simple-prompt --profile=dev"
-;;           python-shell-interpreter-interactive-arg "-i --simple-prompt")
-;;     ;; 解决 Shell Mode(cmd) 下中文乱码问题
-;;     (when (string-equal system-type "windows-nt")
-;;       (defun kevin/windows-shell-mode-coding ()
-;;         (add-to-list (make-local-variable 'company-backends)
-;;                      'elpy-company-backend)
-;;         ;;(set-buffer-file-coding-system 'gbk)
-;;         ;;(set-buffer-process-coding-system 'gbk 'gbk)
-;;         (set-buffer-file-coding-system 'utf-8)
-;;         (set-buffer-process-coding-system 'utf-8 'utf-8))
-;;       (add-hook 'inferior-python-mode-hook
-;;                 'kevin/windows-shell-mode-coding
-;;         	t)
-;;       ;; (add-hook 'python-mode-hook
-;;       ;;           (lambda ()
-;;       ;;             (add-hook 'before-save-hook 'elpy-format-code)))
-;;       )
-;;     (add-hook 'python-mode-hook (lambda() (setq mode-name "Py")))
-;;     ))
-;; (use-package py-autopep8
-;;   :hook elpy-mode-hook)
-;; (use-package anaconda-mode
-;;   :hook ((python-mode . anaconda-mode)
-;;          (python-mode . anaconda-eldoc-mode)
-;;          (python-mode . symbol-overlay-mode))
-;;   :diminish (anaconda-mode "A"))
-;; (use-package ein
-;;   :defer t
-;;   :config
-;;   ;; (with-eval-after-load "ein"
-;;   ;;   (defun advice:ein:notebooklist-open (&rest args)
-;;   ;;     (call-interactively 'ein:force-ipython-version-check)
-;;   ;;     'before)
-;;   ;;   (advice-add 'ein:notebooklist-open
-;;   ;;               :before 'advice:ein:notebooklist-open))
-;;   (require 'ein)
-;;   (require 'ein-notebook)
-;;   (require 'ein-subpackages))
-;; (use-package python-pytest)
-;; ;; (use-package flycheck-pycheckers
-;; ;;   :config (with-eval-after-load 'flycheck
-;; ;;             (add-hook 'flycheck-mode-hook #'flycheck-pycheckers-setup)))
-(use-package lsp-python-ms)
-(use-package lsp-python-ms
-  :ensure t
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-python-ms)
-                          (lsp))))  ; or lsp-deferred
+;;; python
+(use-package elpy
+  ;;:ensure t
+  ;;:defer t
+  :init
+  ;;(advice-add 'python-mode :before 'elpy-enable)
+  (elpy-enable)
+  :bind (:map elpy-mode-map
+              ([f7] . elpy-shell-send-statement))
+  :config
+  (progn
+    ;; (setq python-shell-interpreter "jupyter"
+    ;;       python-shell-interpreter-args "console --simple-prompt --profile=dev"
+    ;;       python-shell-prompt-detect-failure-warning nil)
+    ;; (add-to-list 'python-shell-completion-native-disabled-interpreters
+    ;;              "jupyter")
+    (setq python-shell-interpreter "ipython"
+          python-shell-interpreter-args "-i --simple-prompt --profile=dev"
+          python-shell-interpreter-interactive-arg "-i --simple-prompt")
+    ;; 解决 Shell Mode(cmd) 下中文乱码问题
+    (when (string-equal system-type "windows-nt")
+      (defun kevin/windows-shell-mode-coding ()
+        (add-to-list (make-local-variable 'company-backends)
+                     'elpy-company-backend)
+        ;;(set-buffer-file-coding-system 'gbk)
+        ;;(set-buffer-process-coding-system 'gbk 'gbk)
+        (set-buffer-file-coding-system 'utf-8)
+        (set-buffer-process-coding-system 'utf-8 'utf-8))
+      (add-hook 'inferior-python-mode-hook
+                'kevin/windows-shell-mode-coding
+        	t)
+      ;; (add-hook 'python-mode-hook
+      ;;           (lambda ()
+      ;;             (add-hook 'before-save-hook 'elpy-format-code)))
+      )
+    (add-hook 'python-mode-hook (lambda() (setq mode-name "Py")))
+    ))
+(use-package py-autopep8
+  :hook elpy-mode-hook)
+(use-package anaconda-mode
+  :hook ((python-mode . anaconda-mode)
+         (python-mode . anaconda-eldoc-mode)
+         (python-mode . symbol-overlay-mode))
+  :diminish (anaconda-mode "A"))
+(use-package ein
+  :defer t
+  :config
+  ;; (with-eval-after-load "ein"
+  ;;   (defun advice:ein:notebooklist-open (&rest args)
+  ;;     (call-interactively 'ein:force-ipython-version-check)
+  ;;     'before)
+  ;;   (advice-add 'ein:notebooklist-open
+  ;;               :before 'advice:ein:notebooklist-open))
+  (require 'ein)
+  (require 'ein-notebook)
+  (require 'ein-subpackages))
+(use-package python-pytest)
+;; (use-package flycheck-pycheckers
+;;   :config (with-eval-after-load 'flycheck
+;;             (add-hook 'flycheck-mode-hook #'flycheck-pycheckers-setup)))
+
+;; (use-package lsp-python-ms
+;;   :ensure t
+;;   :hook (python-mode . (lambda ()
+;;                           (require 'lsp-python-ms)
+;;                           (lsp))))  ; or lsp-deferred
 
 ;; golang
 (use-package company-go)
