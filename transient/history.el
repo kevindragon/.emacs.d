@@ -13,8 +13,9 @@
  (magit-fetch nil)
  (magit-gitignore nil)
  (magit-log
-  ("-n256" "--graph" "--decorate")
   ("-n256" "--graph" "--color" "--decorate")
+  ("-n256" "--graph" "--decorate")
+  ("-n512" "--graph" "--color" "--decorate")
   ("-n256" "--graph" "--decorate" "++header" "--stat")
   (("--" "reranker/reranker_proximity_boost_v2.py")))
  (magit-merge nil

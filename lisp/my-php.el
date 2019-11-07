@@ -10,11 +10,15 @@
 
 (defun kj/php-completions ()
   (interactive)
+  (message "[%s] start call kj/php-completions"
+           (current-date-time-format "%Y %b %d %H:%M:%S %a %Z"))
   (when (null kj/php-completions-cache)
     (message "Extracting classes and functions ...")
     (let ((obj (json-read-file (concat kj/php-directory "php_manual_en.json"))))
       (setq kj/php-completions-cache
             (mapcar (lambda (o) (symbol-name (car o))) obj))))
+  (message "[%s] end call kj/php-completions"
+           (current-date-time-format "%Y %b %d %H:%M:%S %a %Z"))
   kj/php-completions-cache)
 
 (defun kj/php-company-prefix-handle ()
