@@ -10,9 +10,7 @@
 ;;; Generated autoloads from treemacs.el
 
 (autoload 'treemacs-version "treemacs" "\
-Return the `treemacs-version'.
-
-\(fn)" t nil)
+Return the `treemacs-version'." t nil)
 
 (autoload 'treemacs "treemacs" "\
 Initialize or toggle treemacs.
@@ -20,9 +18,7 @@ Initialize or toggle treemacs.
 * If a treemacs buffer exists, but is not visible show it.
 * If no treemacs buffer exists for the current frame create and show it.
 * If the workspace is empty additionally ask for the root path of the first
-  project to add.
-
-\(fn)" t nil)
+  project to add." t nil)
 
 (autoload 'treemacs-find-file "treemacs" "\
 Find and focus the current file in the treemacs window.
@@ -40,36 +36,26 @@ Most likley to be useful when `treemacs-tag-follow-mode' is not active.
 Will ask to change the treemacs root if the file to find is not under the
 root. If no treemacs buffer exists it will be created with the current file's
 containing directory as root. Will do nothing if the current buffer is not
-visiting a file or Emacs cannot find any tags for the current file.
-
-\(fn)" t nil)
+visiting a file or Emacs cannot find any tags for the current file." t nil)
 
 (autoload 'treemacs-select-window "treemacs" "\
 Select the treemacs window if it is visible.
 Bring it to the foreground if it is not visible.
 Initialize a new treemacs buffer as calling `treemacs' would if there is no
-treemacs buffer for this frame.
-
-\(fn)" t nil)
+treemacs buffer for this frame." t nil)
 
 (autoload 'treemacs-show-changelog "treemacs" "\
-Show the changelog of treemacs.
-
-\(fn)" t nil)
+Show the changelog of treemacs." t nil)
 
 (autoload 'treemacs-edit-workspaces "treemacs" "\
-Edit your treemacs workspaces and projects as an `org-mode' file.
-
-\(fn)" t nil)
+Edit your treemacs workspaces and projects as an `org-mode' file." t nil)
 
 (autoload 'treemacs-add-and-display-current-project "treemacs" "\
 Open treemacs and add the current project root to the workspace.
 The project is determined first by projectile (if treemacs-projectile is
 installed), then by project.el.
 If the project is already registered with treemacs just move point to its root.
-An error message is displayed if the current buffer is not part of any project.
-
-\(fn)" t nil)
+An error message is displayed if the current buffer is not part of any project." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "treemacs" '("treemacs-version")))
 
@@ -106,9 +92,7 @@ Open Treemacs into a bookmark RECORD.
 Add the current node to Emacs' list of bookmarks.
 For file and directory nodes their absolute path is saved. Tag nodes
 additionally also save the tag's position. A tag can only be bookmarked if the
-treemacs node is pointing to a valid buffer position.
-
-\(fn)" t nil)
+treemacs node is pointing to a valid buffer position." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "treemacs-bookmarks" '("treemacs--")))
 

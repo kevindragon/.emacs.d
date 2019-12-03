@@ -91,9 +91,7 @@ Connect BUFFER to NOTEBOOK.
 Connect to the default notebook specified by
 `ein:connect-default-notebook'.  Set this to `python-mode-hook'
 to automatically connect any python-mode buffer to the
-notebook.
-
-\(fn)" nil nil)
+notebook." nil nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-connect" '("ein:")))
 
@@ -112,9 +110,7 @@ opens a \"plain\" command line interpreter (comint) buffer where
 you cannot use fancy stuff such as TAB completion.
 It should be possible to support python-mode.el.  Patches are welcome!
 
-.. _python.el: https://github.com/fgallina/python.el
-
-\(fn)" t nil)
+.. _python.el: https://github.com/fgallina/python.el" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-console" '("ein:")))
 
@@ -124,14 +120,14 @@ It should be possible to support python-mode.el.  Patches are welcome!
 ;;;;;;  0 0 0))
 ;;; Generated autoloads from ein-contents-api.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-contents-api" '("ein:" "*ein:content-hierarchy*")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-contents-api" '("*ein:content-hierarchy*" "ein:")))
 
 ;;;***
 
 ;;;### (autoloads nil "ein-core" "ein-core.el" (0 0 0 0))
 ;;; Generated autoloads from ein-core.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-core" '("ein:" "*ein:")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-core" '("*ein:" "ein:")))
 
 ;;;***
 
@@ -146,19 +142,13 @@ Insert mode-map into rst document.  For README.rst.
 (autoload 'ein:dev-start-debug "ein-dev" "\
 Enable EIN debugging support.
 When the prefix argument is given, debugging support for websocket
-callback (`websocket-callback-debug-on-error') is enabled.
-
-\(fn)" t nil)
+callback (`websocket-callback-debug-on-error') is enabled." t nil)
 
 (autoload 'ein:dev-stop-debug "ein-dev" "\
-Inverse of `ein:dev-start-debug'.  Hard to maintain because it needs to match start
-
-\(fn)" t nil)
+Inverse of `ein:dev-start-debug'.  Hard to maintain because it needs to match start" t nil)
 
 (autoload 'ein:dev-bug-report-template "ein-dev" "\
-Open a buffer with bug report template.
-
-\(fn)" t nil)
+Open a buffer with bug report template." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-dev" '("ein:")))
 
@@ -174,7 +164,7 @@ Open a buffer with bug report template.
 ;;;### (autoloads nil "ein-file" "ein-file.el" (0 0 0 0))
 ;;; Generated autoloads from ein-file.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-file" '("ein:" "*ein:file-buffername-template*")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-file" '("*ein:file-buffername-template*" "ein:")))
 
 ;;;***
 
@@ -182,24 +172,16 @@ Open a buffer with bug report template.
 ;;; Generated autoloads from ein-helm.el
 
 (autoload 'anything-ein-kernel-history "ein-helm" "\
-Search kernel execution history then insert the selected one.
-
-\(fn)" t nil)
+Search kernel execution history then insert the selected one." t nil)
 
 (autoload 'helm-ein-kernel-history "ein-helm" "\
-Search kernel execution history then insert the selected one.
-
-\(fn)" t nil)
+Search kernel execution history then insert the selected one." t nil)
 
 (autoload 'anything-ein-notebook-buffers "ein-helm" "\
-Choose opened notebook using anything.el interface.
-
-\(fn)" t nil)
+Choose opened notebook using anything.el interface." t nil)
 
 (autoload 'helm-ein-notebook-buffers "ein-helm" "\
-Choose opened notebook using helm interface.
-
-\(fn)" t nil)
+Choose opened notebook using helm interface." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-helm" '("ein:helm-")))
 
@@ -212,6 +194,11 @@ Choose opened notebook using helm interface.
 Instant cell execution minor mode.
 Code cell at point will be automatically executed after any
 change in its input area.
+
+If called interactively, enable Ein:Iexec mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
 
 \(fn &optional ARG)" t nil)
 
@@ -234,7 +221,7 @@ change in its input area.
 ;;;### (autoloads nil "ein-ipdb" "ein-ipdb.el" (0 0 0 0))
 ;;; Generated autoloads from ein-ipdb.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-ipdb" '("ein:" "*ein:ipdb-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-ipdb" '("*ein:ipdb-" "ein:")))
 
 ;;;***
 
@@ -286,7 +273,7 @@ the log of the running jupyter server.
 
 \(fn &optional FORCE LOG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-jupyter" '("ein:" "*ein:")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-jupyter" '("*ein:" "ein:")))
 
 ;;;***
 
@@ -299,7 +286,7 @@ Log on to a jupyterhub server using PAM authentication. Requires jupyterhub vers
 
 \(fn URL-OR-PORT USERNAME PASSWORD CALLBACK)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-jupyterhub" '("ein:jupyterhub-" "*ein:jupyterhub-connections*")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-jupyterhub" '("*ein:jupyterhub-connections*" "ein:jupyterhub-")))
 
 ;;;***
 
@@ -395,7 +382,7 @@ Close all notebooks and servers.
 
 \(fn &optional FORCE)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-notebook" '("ein:" "*ein:notebook--pending-query*")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-notebook" '("*ein:notebook--pending-query*" "ein:")))
 
 ;;;***
 
@@ -415,9 +402,7 @@ automatically be called during calls to `ein:notebooklist-open`.
 \(fn &optional URL-OR-PORT)" t nil)
 
 (autoload 'ein:notebooklist-disable-keepalive "ein-notebooklist" "\
-Disable the notebooklist keepalive calls to the jupyter notebook server.
-
-\(fn)" t nil)
+Disable the notebooklist keepalive calls to the jupyter notebook server." t nil)
 
 (autoload 'ein:notebooklist-reload "ein-notebooklist" "\
 Reload current Notebook list.
@@ -489,7 +474,7 @@ on all the notebooks opened from the current notebooklist.
 
 \(fn NEW-URL-OR-PORT)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-notebooklist" '("ein:" "render-" "generate-breadcrumbs")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-notebooklist" '("ein:" "generate-breadcrumbs" "render-")))
 
 ;;;***
 
@@ -528,9 +513,7 @@ format for notebook links.  Current approach is to use
 S-expression based (rather verbose) serialization, so that
 extending link spec without loosing backward compatibility is
 easier.  For the examples of link format in general, see Info
-node `(org) External links' and Info node `(org) Search options'
-
-\(fn)" nil nil)
+node `(org) External links' and Info node `(org) Search options'" nil nil)
 
 (eval-after-load "org" '(if (fboundp 'org-link-set-parameters) (org-link-set-parameters "ipynb" :follow 'ein:org-open :help-echo "Open ipython notebook." :store 'ein:org-store-link) (org-add-link-type "ipynb" :follow 'ein:org-open) (add-hook 'org-store-link-functions 'ein:org-store-link)))
 
@@ -564,6 +547,11 @@ node `(org) External links' and Info node `(org) Search options'
 
 (autoload 'ein:pseudo-console-mode "ein-pseudo-console" "\
 Pseudo console mode.  Hit RET to execute code.
+
+If called interactively, enable Ein:Pseudo-Console mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
 
 \(fn &optional ARG)" t nil)
 
@@ -605,16 +593,12 @@ Pseudo console mode.  Hit RET to execute code.
 ;;; Generated autoloads from ein-shared-output.el
 
 (autoload 'ein:shared-output-pop-to-buffer "ein-shared-output" "\
-Open shared output buffer.
-
-\(fn)" t nil)
+Open shared output buffer." t nil)
 
 (autoload 'ein:shared-output-show-code-cell-at-point "ein-shared-output" "\
 Show code cell at point in shared-output buffer.
 It is useful when the output of the cell at point is truncated.
-See also `ein:cell-max-num-outputs'.
-
-\(fn)" t nil)
+See also `ein:cell-max-num-outputs'." t nil)
 
 (autoload 'ein:shared-output-eval-string "ein-shared-output" "\
 Evaluate a piece of code.  Prompt will appear asking the code to run.
@@ -628,14 +612,14 @@ shared output buffer.  You can open the buffer by the command
 
 \(fn KERNEL CODE POPUP &rest ARGS)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-shared-output" '("ein:" "*ein:shared-output*")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-shared-output" '("*ein:shared-output*" "ein:")))
 
 ;;;***
 
 ;;;### (autoloads nil "ein-skewer" "ein-skewer.el" (0 0 0 0))
 ;;; Generated autoloads from ein-skewer.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-skewer" '("ein:" "*ein:skewer-" "current-jupyter-cell-output")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-skewer" '("*ein:skewer-" "current-jupyter-cell-output" "ein:")))
 
 ;;;***
 
@@ -665,9 +649,7 @@ shared output buffer.  You can open the buffer by the command
 ;;; Generated autoloads from ein-traceback.el
 
 (autoload 'ein:tb-show "ein-traceback" "\
-Show full traceback in traceback viewer.
-
-\(fn)" t nil)
+Show full traceback in traceback viewer." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ein-traceback" '("ein:t")))
 
@@ -699,7 +681,7 @@ Show full traceback in traceback viewer.
 
 (if (featurep 'org) (let* ((orig (get 'org-babel-load-languages 'custom-type)) (orig-cdr (cdr orig)) (choices (plist-get orig-cdr :key-type))) (push '(const :tag "Ein" ein) (nthcdr 1 choices)) (put 'org-babel-load-languages 'custom-type (cons (car orig) (plist-put orig-cdr :key-type choices)))))
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ob-ein" '("ob-ein-" "org-babel-edit-prep:ein" "*ob-ein-sentinel*")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ob-ein" '("*ob-ein-sentinel*" "ob-ein-" "org-babel-edit-prep:ein")))
 
 ;;;***
 
@@ -707,7 +689,7 @@ Show full traceback in traceback viewer.
 ;;; Generated autoloads from poly-ein.el
  (autoload 'poly-ein-mode "poly-ein")
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "poly-ein" '("pm-" "poly-ein-" "ein:polymode")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "poly-ein" '("ein:polymode" "pm-" "poly-ein-")))
 
 ;;;***
 

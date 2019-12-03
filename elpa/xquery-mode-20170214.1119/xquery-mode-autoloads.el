@@ -16,7 +16,7 @@ A major mode for W3C XQuery 1.0
 
 (add-to-list 'auto-mode-alist '(".xq[erxy]\\'" . xquery-mode))
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "xquery-mode" '("xquery-" "turn-on-xquery-" "toggle-xquery-mode-indent-style")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "xquery-mode" '("toggle-xquery-mode-indent-style" "turn-on-xquery-" "xquery-")))
 
 ;;;***
 

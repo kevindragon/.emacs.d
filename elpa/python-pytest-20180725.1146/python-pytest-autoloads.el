@@ -66,9 +66,7 @@ With a prefix argument, allow editing.
 (autoload 'python-pytest-repeat "python-pytest" "\
 Run pytest with the same argument as the most recent invocation.
 
-With a prefix ARG, allow editing.
-
-\(fn)" t nil)
+With a prefix ARG, allow editing." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "python-pytest" '("python-pytest-")))
 
