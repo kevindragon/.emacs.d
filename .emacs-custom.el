@@ -11,7 +11,8 @@
  ;; If there is more than one, they won't work right.
  '(fringe-mode nil nil (fringe))
  '(package-selected-packages
-   '(flycheck-mypy zeal-at-point yaml-mode xquery-mode window-numbering which-key vue-mode use-package spacemacs-theme smex ripgrep ranger rainbow-delimiters quickrun python-pytest py-autopep8 powerline phpunit php-mode origami mode-icons markdown-preview-mode lsp-vue logview keyfreq js2-refactor htmlize hexo go-imports go-eldoc go-autocomplete flycheck-pycheckers expand-region exec-path-from-shell ensime dockerfile-mode diminish csharp-mode company-quickhelp company-lsp company-go clj-refactor ag))
+   (quote
+    (projectile restclient rg rust-mode skewer-mode swiper symbol-overlay s dash request-deferred request websocket flycheck-mypy zeal-at-point yaml-mode xquery-mode window-numbering which-key vue-mode use-package spacemacs-theme smex ripgrep ranger rainbow-delimiters quickrun python-pytest py-autopep8 powerline phpunit php-mode origami mode-icons markdown-preview-mode lsp-vue logview keyfreq js2-refactor htmlize hexo go-imports go-eldoc go-autocomplete flycheck-pycheckers expand-region exec-path-from-shell ensime dockerfile-mode diminish csharp-mode company-quickhelp company-lsp company-go clj-refactor ag)))
  '(treemacs-silent-refresh t)
  '(window-divider-default-bottom-width 1)
  '(window-divider-default-places t)

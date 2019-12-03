@@ -14,6 +14,12 @@
 ;; set load path
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
+(setq pkg-dir (file-name-as-directory
+               (concat (file-name-as-directory user-emacs-directory)
+                       "packages")))
+
+;; (add-to-list 'load-path (concat pkg-dir "emacs-websocket"))
+
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
 
 ;; set location on frame title
@@ -33,46 +39,6 @@
   (set-face-attribute 'default nil :font "Courier New"))
 (when (string-equal system-type "gnu/linux")
   (set-default-font "Monospace-10"))
-
-;; set ckj font windows下有中文的内容很慢，用下面完美解决
-(when (string-equal system-type "windows-nt")
-  (dolist (charset '(kana han cjk-misc bopomofo))
-    (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "宋体" :size 12)))
-  ;; (set-face-attribute
-  ;;  'default nil
-  ;;  :font (font-spec :name "-outline-Courier New-bold-italic-normal-mono-*-*-*-*-c-*-iso10646-1"
-  ;;                   :weight 'normal
-  ;;                   :slant 'normal
-  ;;                   :size 9.0))
-  ;; (dolist (charset '(kana han symbol cjk-misc bopomofo))
-  ;;   (set-fontset-font
-  ;;    (frame-parameter nil 'font)
-  ;;    charset
-  ;;    (font-spec :name "-outline-微软雅黑-normal-normal-normal-sans-*-*-*-*-p-*-iso10646-1"
-  ;;               :weight 'normal
-  ;;               :slant 'normal
-  ;;               :size 10.5)))
-  (let ((mypaths
-         '("C:/Program Files/Git/bin"
-           "C:/Program Files (x86)/Mozilla Firefox/"
-           "C:/Program Files (x86)/Google/Chrome/Application"
-           "C:/Program Files/Oracle/VirtualBox"
-           "C:/Users/jiangkx/AppData/Local/Continuum/anaconda3"
-           "C:/Users/jiangkx/AppData/Local/Continuum/anaconda3/Scripts"
-           "C:/Program Files/Zeal"
-           "C:/Users/jiangkx/AppData/Roaming/Composer/vendor/bin"
-           "C:/msys64/usr/bin"
-           ;; "C:/msys64/mingw64/bin"
-           )))
-    (setenv "PATH" (concat
-                    (mapconcat 'identity mypaths ";") ";"
-                    (getenv "PATH")))
-    (setq exec-path (append
-                     mypaths
-                     (split-string (getenv "PATH") ";")
-                     (list "." exec-directory))))
-  (setq tramp-default-method "plink"))
 
 ;; coding system
 (prefer-coding-system 'cp950)
@@ -187,6 +153,32 @@ If the new path's directories does not exist, create them."
   :config
   (exec-path-from-shell-initialize))
 
+;; set ckj font windows下有中文的内容很慢，用下面完美解决
+(when (string-equal system-type "windows-nt")
+  (dolist (charset '(kana han cjk-misc bopomofo))
+    (set-fontset-font (frame-parameter nil 'font) charset
+                      (font-spec :family "宋体" :size 12)))
+  (let ((mypaths
+         '("C:/Program Files/Git/bin"
+           "C:/Program Files (x86)/Mozilla Firefox/"
+           "C:/Program Files (x86)/Google/Chrome/Application"
+           "C:/Program Files/Oracle/VirtualBox"
+           "C:/Users/jiangkx/AppData/Local/Continuum/anaconda3"
+           "C:/Users/jiangkx/AppData/Local/Continuum/anaconda3/Scripts"
+           "C:/Program Files/Zeal"
+           "C:/Users/jiangkx/AppData/Roaming/Composer/vendor/bin"
+           "C:/msys64/usr/bin"
+           ;; "C:/msys64/mingw64/bin"
+           )))
+    (setenv "PATH" (concat
+                    (mapconcat 'identity mypaths ";") ";"
+                    (getenv "PATH")))
+    (setq exec-path (append
+                     (split-string (getenv "PATH") ";")
+                     mypaths
+                     (list "." exec-directory))))
+  (setq tramp-default-method "plink"))
+
 ;; (use-package spacemacs-theme)
 ;; (use-package dracula-theme)
 ;; (if (display-graphic-p)
@@ -200,6 +192,13 @@ If the new path's directories does not exist, create them."
 ;;; 有点影响性能了
 ;; (use-package flycheck
 ;;   :init (global-flycheck-mode))
+
+;;; 基础包
+(use-package websocket)
+(use-package request)
+(use-package request-deferred)
+(use-package dash)
+(use-package s)
 
 ;; setup yasnippet
 (use-package yasnippet
@@ -422,68 +421,70 @@ If the new path's directories does not exist, create them."
 (use-package markdown-mode)
 
 ;;; python
-;; (use-package elpy
-;;   :init
-;;   ;;(advice-add 'python-mode :before 'elpy-enable)
-;;   (elpy-enable)
-;;   :hook (python-mode . symbol-overlay-mode)
-;;   :bind (:map elpy-mode-map
-;;               ([f7] . elpy-shell-send-statement))
-;;   :config
-;;   (progn
-;;     ;; (setq python-shell-interpreter "jupyter"
-;;     ;;       python-shell-interpreter-args "console --simple-prompt --profile=dev"
-;;     ;;       python-shell-prompt-detect-failure-warning nil)
-;;     ;; (add-to-list 'python-shell-completion-native-disabled-interpreters
-;;     ;;              "jupyter")
-;;     (setq python-shell-interpreter "ipython"
-;;           python-shell-interpreter-args "-i --simple-prompt --profile=dev"
-;;           python-shell-interpreter-interactive-arg "-i --simple-prompt")
-;;     ;; 解决 Shell Mode(cmd) 下中文乱码问题
-;;     (when (string-equal system-type "windows-nt")
-;;       (defun kevin/windows-shell-mode-coding ()
-;;         (add-to-list (make-local-variable 'company-backends)
-;;                      'elpy-company-backend)
-;;         ;;(set-buffer-file-coding-system 'gbk)
-;;         ;;(set-buffer-process-coding-system 'gbk 'gbk)
-;;         (set-buffer-file-coding-system 'utf-8)
-;;         (set-buffer-process-coding-system 'utf-8 'utf-8))
-;;       (add-hook 'inferior-python-mode-hook
-;;                 'kevin/windows-shell-mode-coding
-;;         	t)
-;;       ;; (add-hook 'python-mode-hook
-;;       ;;           (lambda ()
-;;       ;;             (add-hook 'before-save-hook 'elpy-format-code)))
-;;       )
-;;     (add-hook 'python-mode-hook (lambda() (setq mode-name "PY")))
-;;     )
-;;   :diminish ((ivy-mode . "")
-;;              (symbol-overlay-mode . "")
-;;              (elpy-mode . "E")))
-;; (use-package py-autopep8
-;;   :hook elpy-mode-hook)
-;; (use-package anaconda-mode
-;;   :hook ((python-mode . anaconda-mode)
-;;          (python-mode . anaconda-eldoc-mode))
-;;   :diminish (anaconda-mode "A"))
-;; (use-package ein
-;;   :defer t
-;;   :config
-;;   ;; (with-eval-after-load "ein"
-;;   ;;   (defun advice:ein:notebooklist-open (&rest args)
-;;   ;;     (call-interactively 'ein:force-ipython-version-check)
-;;   ;;     'before)
-;;   ;;   (advice-add 'ein:notebooklist-open
-;;   ;;               :before 'advice:ein:notebooklist-open))
-;;   (require 'ein)
-;;   (require 'ein-notebook)
-;;   (require 'ein-subpackages))
+(use-package elpy
+  :init
+  ;;(advice-add 'python-mode :before 'elpy-enable)
+  (elpy-enable)
+  :hook (python-mode . symbol-overlay-mode)
+  :bind (:map elpy-mode-map
+              ([f7] . elpy-shell-send-statement))
+  :config
+  (progn
+    ;; (setq python-shell-interpreter "jupyter"
+    ;;       python-shell-interpreter-args "console --simple-prompt --profile=dev"
+    ;;       python-shell-prompt-detect-failure-warning nil)
+    ;; (add-to-list 'python-shell-completion-native-disabled-interpreters
+    ;;              "jupyter")
+    (setq python-shell-interpreter "ipython"
+          python-shell-interpreter-args "-i --simple-prompt --profile=dev"
+          python-shell-interpreter-interactive-arg "-i --simple-prompt")
+    ;; 解决 Shell Mode(cmd) 下中文乱码问题
+    (when (string-equal system-type "windows-nt")
+      (defun kevin/windows-shell-mode-coding ()
+        (add-to-list (make-local-variable 'company-backends)
+                     'elpy-company-backend)
+        ;;(set-buffer-file-coding-system 'gbk)
+        ;;(set-buffer-process-coding-system 'gbk 'gbk)
+        (set-buffer-file-coding-system 'utf-8)
+        (set-buffer-process-coding-system 'utf-8 'utf-8))
+      (add-hook 'inferior-python-mode-hook
+                'kevin/windows-shell-mode-coding
+        	t)
+      ;; (add-hook 'python-mode-hook
+      ;;           (lambda ()
+      ;;             (add-hook 'before-save-hook 'elpy-format-code)))
+      )
+    (add-hook 'python-mode-hook (lambda() (setq mode-name "PY")))
+    )
+  :diminish ((ivy-mode . "")
+             (symbol-overlay-mode . "")
+             (elpy-mode . "E")))
+(use-package py-autopep8
+  :hook elpy-mode-hook)
+(use-package anaconda-mode
+  :hook ((python-mode . anaconda-mode)
+         (python-mode . anaconda-eldoc-mode))
+  :diminish (anaconda-mode "A"))
+
+(use-package ein
+  :defer t
+  :config
+  (with-eval-after-load "ein"
+    (defun advice:ein:notebooklist-open (&rest args)
+      (call-interactively 'ein:force-ipython-version-check)
+      'before)
+    (advice-add 'ein:notebooklist-open
+                :before 'advice:ein:notebooklist-open))
+  (require 'ein)
+  (require 'ein-notebook)
+  (require 'ein-subpackages))
+
 (use-package python-pytest)
 ;; (use-package flycheck-pycheckers
 ;;   :config (with-eval-after-load 'flycheck
 ;;             (add-hook 'flycheck-mode-hook #'flycheck-pycheckers-setup)))
 
-(require 'pyrepl-mode)
+;; (require 'pyrepl-mode)
 
 ;; (use-package flycheck-mypy
 ;;   :config
@@ -495,24 +496,24 @@ If the new path's directories does not exist, create them."
 ;;   :init (with-eval-after-load 'flycheck
 ;;           (add-hook 'flycheck-mode-hook #'flycheck-pycheckers-setup)))
 
-;;; python lsp python microsoft
-(defun my-python-hook ()
-  (set (make-local-variable 'forward-sexp-function) nil)
-  (setq python-shell-interpreter "ipython"
-        python-shell-interpreter-args "-i --simple-prompt --profile=dev"
-        python-shell-interpreter-interactive-arg "-i --simple-prompt")
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-c C-c") 'pyrepl-send-region-or-buffer-and-step)
-    (define-key map (kbd "C-c C-z") 'pyrepl-shell-switch-to-shell)
-    map))
-(use-package lsp-python-ms
-  :hook ((python-mode . (lambda ()
-                          (require 'lsp-python-ms)
-                          (lsp)
-                          (setq mode-name "ⓟ")))
-         (python-mode . symbol-overlay-mode)
-         (python-mode . my-python-hook)
-         ))
+;; ;;; python lsp python microsoft
+;; (defun my-python-hook ()
+;;   (set (make-local-variable 'forward-sexp-function) nil)
+;;   (setq python-shell-interpreter "ipython"
+;;         python-shell-interpreter-args "-i --simple-prompt --profile=dev"
+;;         python-shell-interpreter-interactive-arg "-i --simple-prompt")
+;;   (let ((map (make-sparse-keymap)))
+;;     (define-key map (kbd "C-c C-c") 'pyrepl-send-region-or-buffer-and-step)
+;;     (define-key map (kbd "C-c C-z") 'pyrepl-shell-switch-to-shell)
+;;     map))
+;; (use-package lsp-python-ms
+;;   :hook ((python-mode . (lambda ()
+;;                           (require 'lsp-python-ms)
+;;                           (lsp)
+;;                           (setq mode-name "ⓟ")))
+;;          (python-mode . symbol-overlay-mode)
+;;          (python-mode . my-python-hook)
+;;          ))
 
 ;; golang
 ;; (use-package company-go)
