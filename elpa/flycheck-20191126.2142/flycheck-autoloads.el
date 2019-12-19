@@ -10,9 +10,7 @@
 ;;; Generated autoloads from flycheck.el
 
 (autoload 'flycheck-manual "flycheck" "\
-Open the Flycheck manual.
-
-\(fn)" t nil)
+Open the Flycheck manual." t nil)
 
 (autoload 'flycheck-mode "flycheck" "\
 Minor mode for on-the-fly syntax checking.
@@ -33,6 +31,8 @@ buffer manually.
 \\{flycheck-mode-map}
 
 \(fn &optional ARG)" t nil)
+
+(put 'global-flycheck-mode 'globalized-minor-mode t)
 
 (defvar global-flycheck-mode nil "\
 Non-nil if Global Flycheck mode is enabled.
@@ -227,7 +227,7 @@ Use this together with the `option', `option-list' and
 
 (function-put 'flycheck-def-option-var 'doc-string-elt '4)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flycheck" '("flycheck-" "list-flycheck-errors" "help-flycheck-checker-d")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flycheck" '("flycheck-" "help-flycheck-checker-d" "list-flycheck-errors")))
 
 ;;;***
 

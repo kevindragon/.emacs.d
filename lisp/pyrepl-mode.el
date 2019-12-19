@@ -266,10 +266,11 @@ If region is active, normalize the region and shift."
 ;;;###autoload
 (define-minor-mode pyrepl-mode
   "docstring"
-  :lighter " p>"
+  :lighter ""
   :keymap
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c C-c") 'elpy-shell-send-region-or-buffer)
+    (define-key map (kbd "C-c C-y f") 'elpy-shell-send-defun)
     (define-key map (kbd "C-c C-z") 'elpy-shell-switch-to-shell)
     (define-key map (kbd "C-c C-k") 'elpy-shell-kill)
     (define-key map (kbd "C-c C-K") 'elpy-shell-kill-all)

@@ -83,6 +83,8 @@
 ;; make ibuffer default
 (defalias 'list-buffers 'ibuffer)
 
+(add-to-list 'load-path (concat user-emacs-directory "lisp/"))
+
 (require 'package)
 ;; (add-to-list 'package-archives
 ;;              '("marmalade" . "http://marmalade-repo.org/packages/") t)
@@ -91,6 +93,7 @@
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
+(setq package-check-signature nil)
 
 ;;; install use-package
 (unless (package-installed-p 'use-package)
@@ -117,15 +120,11 @@
 (use-package dash)
 (use-package s)
 
+(use-package spacemacs-theme
+  :init (load-theme 'spacemacs-light t))
+
 ;;; 按使用习惯排序操作
 (use-package smex)
-
-;;; helm
-;; (use-package helm
-;;   :init (helm-mode 1)
-;;   :config
-;;   (global-set-key (kbd "M-x") 'helm-M-x)
-;;   (global-set-key (kbd "C-x C-f") #'helm-find-files))
 
 ;;; ivy
 (use-package ivy
@@ -137,6 +136,14 @@
 (use-package counsel
   :bind (("C-x C-f" . counsel-find-file)
          ("M-x" . counsel-M-x)))
+
+(use-package org
+  :config
+  (when (string-equal system-type "windows-nt")
+    (setq org-directory "c:/workspace/orgs")
+    (setq org-agenda-files '("c:/workspace/orgs/todo.org"))
+    (setq org-default-notes-file (concat org-directory "/notes.org")))
+  (setq org-log-done 'time))
 
 ;;; yasnippet
 (use-package yasnippet
@@ -160,6 +167,11 @@
   (define-auto-insert "\\.py$" ["template.py" autoinsert-yas-expand])
   )
 
+;;; ripgrep
+(use-package ripgrep)
+(use-package rg
+  :config (rg-enable-default-bindings))
+
 ;;; company
 (use-package company
   :init (setq company-dabbrev-downcase nil)
@@ -171,11 +183,6 @@
 
 (use-package company-quickhelp)
 
-;; mode line mode names settings
-(use-package diminish
-  :diminish ((abbrev-mode . " A")
-             (auto-revert-mode . "")))
-
 (use-package window-numbering
   :init (add-hook 'after-init-hook 'window-numbering-mode t))
 
@@ -184,8 +191,16 @@
   :bind (:map help-map ("C-h" . which-key-C-h-dispatch))
   :init (add-hook 'after-init-hook 'which-key-mode t))
 
+(use-package origami
+  :bind (("C-c z o" . origami-open-node)
+         ("C-c z f" . origami-close-node)
+         ("C-c z a" . origami-close-all-nodes)
+         ("C-c z r" . origami-open-all-nodes))
+  :config (global-origami-mode))
+
 (use-package symbol-overlay
   :init (symbol-overlay-mode 1)
+  :hook ((emacs-lisp-mode . symbol-overlay-mode))
   :bind (("C-c M-i" . symbol-overlay-put)
          ("C-c M-n" . symbol-overlay-switch-forward)
          ("C-c M-p" . symbol-overlay-switch-backward))
@@ -194,9 +209,23 @@
 (use-package restclient
   :mode ("\\.http" . restclient-mode))
 
+(use-package magit
+  :bind ("M-n g" . magit-status)
+  :config
+  (setq magit-commit-show-diff nil
+        truncate-lines nil))
+
+(use-package projectile
+  :diminish projectile-mode
+  :init (projectile-mode +1)
+  :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+
 (use-package treemacs
   :config
   (custom-set-variables '(treemacs-silent-refresh t)))
+(use-package lsp-treemacs)
 
 (use-package plantuml-mode
   :config
@@ -208,18 +237,6 @@
 (use-package xquery-mode)
 
 ;;; Python
-(use-package elpy
-  :init
-  (advice-add 'python-mode :before 'elpy-enable)
-  :config
-  (setq python-shell-interpreter "ipython"
-        python-shell-interpreter-args "-i --simple-prompt --profile=dev"
-        python-shell-interpreter-interactive-arg "-i --simple-prompt")
-  (add-hook 'python-mode-hook (lambda() (setq mode-name "ⓟ")))
-  :diminish ((elpy-mode . "Ẽ")
-             (highlight-indentation-mode . "")))
-(use-package py-autopep8
-  :hook elpy-mode-hook)
 (use-package python-pytest)
 (use-package ein
   :defer t
@@ -227,6 +244,90 @@
   (require 'ein)
   (require 'ein-notebook)
   (require 'ein-subpackages))
+;;; python lsp python microsoft
+(require 'pyrepl-mode)
+(defun my-python-hook ()
+  (set (make-local-variable 'forward-sexp-function) nil)
+  ;; ipython
+  ;; (setq python-shell-interpreter "ipython"
+  ;;       python-shell-interpreter-args "-i --simple-prompt --profile=dev"
+  ;;       python-shell-interpreter-interactive-arg "-i --simple-prompt")
+  ;; jupyter
+  (setq python-shell-interpreter "jupyter"
+        python-shell-interpreter-args "console --simple-prompt"
+        python-shell-prompt-detect-failure-warning nil)
+  (add-to-list 'python-shell-completion-native-disabled-interpreters
+               "jupyter"))
+(use-package lsp-python-ms
+  :hook ((python-mode . (lambda ()
+                          (require 'lsp-python-ms)
+                          (lsp)
+                          (flycheck-mode)
+                          (setq-local flycheck-checker 'python-flake8)))
+         (python-mode . symbol-overlay-mode)
+         (python-mode . my-python-hook)
+         ))
+
+(defun kj/inferior-python-mode-hook ()
+  (when (string-equal system-type "windows-nt")
+    (set-terminal-coding-system 'gbk)
+    (set-buffer-process-coding-system 'gbk 'gbk)))
+(use-package python
+  :hook
+  (inferior-python-mode . kj/inferior-python-mode-hook)
+  :config
+  (set (make-local-variable 'forward-sexp-function) nil)
+  (setq mode-name "ⓟ"))
+
+(use-package flycheck
+  ;; :init (global-flycheck-mode)
+  )
+
+;;; log-mode
+(add-to-list 'load-path (concat user-emacs-directory "packages/log-mode"))
+(require 'log-mode)
+
+;;; web mode
+(use-package web-mode
+  :mode ("\\.tpl$" "\\.[agj]sp$" "\\.html?$" "\\.erb$" "\\.vue$")
+  :init (progn
+          (setq web-mode-markup-indent-offset 2)
+          (setq web-mode-css-indent-offset 2)
+          (setq web-mode-code-indent-offset 2)
+          (setq web-mode-enable-current-column-highlight t))
+  :hook ((web-mode . company-mode)
+         (web-mode . (lambda ()
+                       (flycheck-mode))))
+  :config
+  (setq web-mode-script-padding 0
+        web-mode-style-padding 0))
+
+(use-package vue-mode)
+
+(use-package rust-mode)
+
+(use-package lsp-mode
+  :hook ((rust-mode web-mode js-mode typescript-mode) . lsp-deferred)
+  :commands (lsp lsp-deferred)
+  :config
+  (lsp-signature-mode -1)
+  (when (string= major-mode "python-mode")
+    (setq lsp-prefer-flymake nil)))
+(use-package company-lsp :commands company-lsp)
+
+(use-package lsp-ui
+  :config
+  (define-key lsp-ui-mode-map (kbd "C-c t d") #'lsp-ui-doc-mode)
+  (define-key lsp-ui-mode-map (kbd "C-c d s") #'lsp-ui-doc-show)
+  (define-key lsp-ui-mode-map (kbd "C-c d h") #'lsp-ui-doc-hide))
+
+(use-package highlight-indentation
+  :diminish ((highlight-indentation-mode . "")))
+
+;; mode line mode names settings
+(use-package diminish
+  :diminish ((abbrev-mode . " A")
+             (auto-revert-mode . "")))
 
 ;;set transparent effect
 (setq alpha-list '((100 100) (95 65) (85 55) (75 45) (65 35)))
@@ -241,20 +342,25 @@
     (setq alpha-list (cdr (append alpha-list (list h))))))
 (global-set-key [(f11)] 'loop-alpha)
 
-;;; set load path
-(add-to-list 'load-path (concat user-emacs-directory "lisp/"))
 (load "myfuns.el")
 (load "keybindings.el")
 (load "randomize-region.el")
 
-;;; custom
+;; ;;; custom
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(lsp-python-ms-cache "Library")
+ '(lsp-python-ms-log-level "Trace")
+ '(lsp-signature-render-documentation nil)
+ '(lsp-ui-doc-alignment 'window)
+ '(lsp-ui-doc-delay 0.2)
+ '(lsp-ui-doc-position 'at-point)
  '(package-selected-packages
-   '(elpy yaml-mode symbol-overlay which-key window-numbering helm exec-path-from-shell use-package)))
+   '(inferior-python inferior-python-mode lsp-treemacs spacemacs-theme origami rust-mode tide js2-refactor web-mode mmm-mode vue-mode typescript-mode flycheck ripgrep lsp-python-ms rg magit yaml-mode symbol-overlay which-key window-numbering exec-path-from-shell use-package))
+ '(send-mail-function 'mailclient-send-it))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -262,4 +368,5 @@
  ;; If there is more than one, they won't work right.
  '(font-lock-comment-face ((t (:foreground "light slate gray"))))
  '(fringe ((t (:background "ghost white"))))
+ '(mmm-default-submode-face ((t (:background "white"))))
  '(window-divider ((t (:foreground "gray30")))))

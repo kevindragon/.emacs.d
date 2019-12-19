@@ -12,7 +12,7 @@
 
 (when load-file-name (add-to-list 'custom-theme-load-path (file-name-as-directory (file-name-directory load-file-name))))
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "spacemacs-common" '("create-spacemacs-theme" "true-color-p" "spacemacs-theme-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "spacemacs-common" '("create-spacemacs-theme" "spacemacs-theme-" "true-color-p")))
 
 ;;;***
 

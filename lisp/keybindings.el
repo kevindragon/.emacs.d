@@ -53,6 +53,9 @@
 ;; maximum frame
 (global-set-key (kbd "C-x w m") 'toggle-frame-maximized)
 
+(global-set-key (kbd "C-c b p") 'previous-buffer)
+(global-set-key (kbd "C-c b n") 'next-buffer)
+
 ;; nxml
 (add-hook 'nxml-mode-hook
           (lambda ()

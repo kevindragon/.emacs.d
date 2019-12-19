@@ -39,3 +39,7 @@ lein uberjar
 scp target/uberjar/wiki-synonym.jar use1\\jiangkx@10.94.163.137:/home/use1/jiangkx/workspace/wiki-synonym
 scp target/uberjar/wiki-synonym.jar use1\\jiangkx@10.94.163.137:/home/use1/jiangkx/workspace/wiki-synonym
 scp target/uberjar/wiki-synonym.jar use1\\jiangkx@10.94.163.137:/home/use1/jiangkx/workspace/wiki-synonym
+cd ../../
+cd ../
+cd clientui/
+npm run serve
