@@ -236,10 +236,13 @@ Because some variables are buffer local.")
 
 (defun lsp-ui-doc--inline-formatted-string (string)
   "Formats STRING for inline rendering."
-  (mapconcat (lambda (line)
-               (lsp-ui-doc--inline-wrapped-line (string-trim-right line)))
-             (split-string string "[\n\v\f\r]+")
-             "\n\n"))
+  (replace-regexp-in-string
+   "[\n\v\f\r]{2,}"
+   "\n\n"
+   (mapconcat (lambda (line)
+                (lsp-ui-doc--inline-wrapped-line (string-trim-right line)))
+              (split-string string "[\n\v\f\r]+")
+              "\n")))
 
 (defun lsp-ui-doc--extract-marked-string (marked-string &optional language)
   "Render the MARKED-STRING."

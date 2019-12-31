@@ -2,8 +2,6 @@
 ;; author: Kevin Jiang
 ;; E-mail: wenlin1988@126.com
 
-(setq inhibit-startup-message t)
-
 ;; setup my info
 (setq user-full-name "Kevin Jiang")
 (setq user-mail-address "wenlin1988@126.com")
@@ -119,6 +117,18 @@
 (use-package request-deferred)
 (use-package dash)
 (use-package s)
+
+(use-package dashboard
+  :init
+  (dashboard-setup-startup-hook)
+  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+  :config
+  (setq dashboard-startup-banner 'logo)
+  (setq dashboard-items '((projects . 5)
+                          (recents  . 20)
+                          (agenda . 5)
+                          (bookmarks . 5)
+                          (registers . 5))))
 
 (use-package spacemacs-theme
   :init (load-theme 'spacemacs-light t))
@@ -261,7 +271,7 @@
 (use-package lsp-python-ms
   :hook ((python-mode . (lambda ()
                           (require 'lsp-python-ms)
-                          (lsp)
+                          (lsp-deferred)
                           (flycheck-mode)
                           (setq-local flycheck-checker 'python-flake8)))
          (python-mode . symbol-overlay-mode)
@@ -313,7 +323,8 @@
   (lsp-signature-mode -1)
   (when (string= major-mode "python-mode")
     (setq lsp-prefer-flymake nil)))
-(use-package company-lsp :commands company-lsp)
+(use-package company-lsp
+  :init (setq company-lsp-cache-candidates 'auto))
 
 (use-package lsp-ui
   :config
@@ -346,7 +357,7 @@
 (load "keybindings.el")
 (load "randomize-region.el")
 
-;; ;;; custom
+;;; custom
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -355,11 +366,11 @@
  '(lsp-python-ms-cache "Library")
  '(lsp-python-ms-log-level "Trace")
  '(lsp-signature-render-documentation nil)
- '(lsp-ui-doc-alignment 'window)
+ '(lsp-ui-doc-alignment 'frame)
  '(lsp-ui-doc-delay 0.2)
  '(lsp-ui-doc-position 'at-point)
  '(package-selected-packages
-   '(inferior-python inferior-python-mode lsp-treemacs spacemacs-theme origami rust-mode tide js2-refactor web-mode mmm-mode vue-mode typescript-mode flycheck ripgrep lsp-python-ms rg magit yaml-mode symbol-overlay which-key window-numbering exec-path-from-shell use-package))
+   '(dashboard inferior-python inferior-python-mode lsp-treemacs spacemacs-theme origami rust-mode tide js2-refactor web-mode mmm-mode vue-mode typescript-mode flycheck ripgrep lsp-python-ms rg magit yaml-mode symbol-overlay which-key window-numbering exec-path-from-shell use-package))
  '(send-mail-function 'mailclient-send-it))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
