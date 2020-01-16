@@ -35,10 +35,12 @@
 (require 'ess-custom nil t)
 (require 'clojure-mode nil t)
 (require 'julia-mode nil t)
+(require 'haskell-mode nil t)
 
 (declare-function ess-indent-line "ess")
 (declare-function ess-r-eldoc-function "ess-r-completion")
 (declare-function ess-setq-vars-local "ess-utils")
+(declare-function haskell-indentation-indent-line "haskell-indentation")
 
 (defun ein:ml-fontify (limit)
   "Fontify next input area comes after the current point then
@@ -187,6 +189,19 @@ This function may raise an error."
       (set-syntax-table ess-r-mode-syntax-table))
     (when (boundp 'ess-r-mode-map)
       (set-keymap-parent ein:notebook-multilang-mode-map ess-r-mode-map))))
+
+(defun ein:ml-lang-setup-haskell ()
+  (when (featurep 'haskell-mode)
+    (setq-local mode-name "EIN[haskell]")
+    (setq-local comment-start "-- ")
+    ;; (setq-local comment-start-skip  "--\\s-*")
+    (when (boundp 'haskell-indentation-indent-line)
+      (setq-local indent-line-function
+                  (apply-partially #'ein:ml-indent-line-function #'haskell-indentation-indent-line)))
+    (when (boundp 'haskell-mode-syntax-table)
+      (set-syntax-table haskell-mode-syntax-table))
+    (when (boundp 'haskell-mode-map)
+      (set-keymap-parent ein:notebook-multilang-mode-map haskell-mode-map))))
 
 (defun ein:ml-lang-setup (kernelspec)
   (let ((setup-func (intern (concat "ein:ml-lang-setup-" (ein:$kernelspec-language kernelspec)))))

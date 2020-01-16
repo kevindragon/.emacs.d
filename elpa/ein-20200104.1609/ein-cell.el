@@ -203,6 +203,21 @@ a number will limit the number of lines in a cell output."
           (insert-image img ".")))
     (error (ein:log 'warn "Could not insert image: %s" err) nil)))
 
+(defun ein:cell--markdown-heading-p (cell)
+  "Check if cell is behaving like a heading cell.
+
+Returns true if cell is a markdown cell, has at least one # character at the start of the line and is only one line long (i.e. does not contain any newline characters)."
+  (and (ein:markdowncell-p cell)
+       (string-match "^#+ " (ein:cell-get-text cell))
+       (= 0 (seq-count #'(lambda (c)
+                           (char-equal c ?\n))
+                       (ein:cell-get-text cell)))))
+
+(cl-defmethod ein:cell--markdown-heading-level ((cell ein:markdowncell))
+  (progn
+    (string-match "^#+" (ein:cell-get-text cell))
+    (match-end 0)))
+
 
 ;;; Cell factory
 
@@ -226,6 +241,7 @@ a number will limit the number of lines in a cell output."
 
 (defun ein:cell-from-type (type &rest args)
   (apply (ein:cell-class-from-type type) args))
+
 
 (defun ein:cell--determine-cell-type (json-data)
   (let ((base-type (plist-get json-data :cell_type))
@@ -999,7 +1015,7 @@ prettified text thus be used instead of HTML type."
         ((html text/html)
          (funcall (ein:output-area-get-html-renderer) (plist-get json type)))
         ((latex text/latex text text/plain)
-         (ein:insert-read-only (plist-get json type)))
+         (ein:insert-read-only (ansi-color-apply (plist-get json type))))
         ((svg image/svg+xml)
          (ein:insert-image value (ein:fix-mime-type key) t))
         ((png image/png jpeg image/jpeg)

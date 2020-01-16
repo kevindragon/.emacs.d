@@ -1,4 +1,4 @@
-(define-package "ein" "20191216.1849" "Emacs IPython Notebook"
+(define-package "ein" "20200104.1609" "Emacs IPython Notebook"
   '((emacs "25")
     (websocket "20191017.30")
     (auto-complete "1.4.0")
