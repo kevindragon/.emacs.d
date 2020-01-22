@@ -271,7 +271,7 @@
 (use-package lsp-python-ms
   :hook ((python-mode . (lambda ()
                           (require 'lsp-python-ms)
-                          (lsp-deferred)
+                          (lsp)
                           (flycheck-mode)
                           (setq-local flycheck-checker 'python-flake8)))
          (python-mode . symbol-overlay-mode)
