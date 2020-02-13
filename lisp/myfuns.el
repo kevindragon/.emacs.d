@@ -51,6 +51,10 @@
   (when buffer-file-name
     (kill-new buffer-file-name)))
 
+(defun kj/copy-buffer-name ()
+  (interactive)
+  (kill-new (buffer-name)))
+
 (require 's)
 
 (defun kj/copy-project-file-name ()

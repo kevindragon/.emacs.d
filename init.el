@@ -124,14 +124,22 @@
   (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
   :config
   (setq dashboard-startup-banner 'logo)
-  (setq dashboard-items '((projects . 5)
+  (setq dashboard-items '((projects . 10)
                           (recents  . 20)
-                          (agenda . 5)
+                          (agenda . 10)
                           (bookmarks . 5)
                           (registers . 5))))
 
 (use-package spacemacs-theme
   :init (load-theme 'spacemacs-light t))
+;; (use-package dracula-theme
+;;   :init (load-theme 'dracula t))
+;;; customize default theme
+;; (custom-set-faces
+;;  '(font-lock-comment-face ((t (:foreground "light slate gray"))))
+;;  '(fringe ((t (:background "ghost white"))))
+;;  '(mmm-default-submode-face ((t (:background "white"))))
+;;  '(window-divider ((t (:foreground "gray30")))))
 
 ;;; 按使用习惯排序操作
 (use-package smex)
@@ -151,7 +159,7 @@
   :config
   (when (string-equal system-type "windows-nt")
     (setq org-directory "c:/workspace/orgs")
-    (setq org-agenda-files '("c:/workspace/orgs/todo.org"))
+    (setq org-agenda-files '("c:/workspace/orgs/"))
     (setq org-default-notes-file (concat org-directory "/notes.org")))
   (setq org-log-done 'time))
 
@@ -244,7 +252,8 @@
 
 (use-package yaml-mode)
 
-(use-package xquery-mode)
+(use-package xquery-mode
+  :hook ((xquery-mode . symbol-overlay-mode)))
 
 ;;; Python
 (use-package python-pytest)
@@ -259,19 +268,20 @@
 (defun my-python-hook ()
   (set (make-local-variable 'forward-sexp-function) nil)
   ;; ipython
-  ;; (setq python-shell-interpreter "ipython"
-  ;;       python-shell-interpreter-args "-i --simple-prompt --profile=dev"
-  ;;       python-shell-interpreter-interactive-arg "-i --simple-prompt")
+  (setq python-shell-interpreter "ipython"
+        python-shell-interpreter-args "-i --simple-prompt --profile=dev"
+        python-shell-interpreter-interactive-arg "-i --simple-prompt")
   ;; jupyter
-  (setq python-shell-interpreter "jupyter"
-        python-shell-interpreter-args "console --simple-prompt"
-        python-shell-prompt-detect-failure-warning nil)
-  (add-to-list 'python-shell-completion-native-disabled-interpreters
-               "jupyter"))
+  ;; (setq python-shell-interpreter "jupyter"
+  ;;       python-shell-interpreter-args "console --simple-prompt"
+  ;;       python-shell-prompt-detect-failure-warning nil)
+  ;; (add-to-list 'python-shell-completion-native-disabled-interpreters
+  ;;              "jupyter")
+  )
 (use-package lsp-python-ms
   :hook ((python-mode . (lambda ()
                           (require 'lsp-python-ms)
-                          (lsp)
+                          (lsp-deferred)
                           (flycheck-mode)
                           (setq-local flycheck-checker 'python-flake8)))
          (python-mode . symbol-overlay-mode)
@@ -312,6 +322,8 @@
   (setq web-mode-script-padding 0
         web-mode-style-padding 0))
 
+(use-package json-mode)
+
 (use-package vue-mode)
 
 (use-package rust-mode)
@@ -340,6 +352,9 @@
   :diminish ((abbrev-mode . " A")
              (auto-revert-mode . "")))
 
+(when (package-installed-p 'nxml)
+  (add-hook 'nxml-mode-hook (lambda () (setq truncate-lines t))))
+
 ;;set transparent effect
 (setq alpha-list '((100 100) (95 65) (85 55) (75 45) (65 35)))
 (defun loop-alpha ()
@@ -363,21 +378,21 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(lsp-python-ms-cache "Library")
- '(lsp-python-ms-log-level "Trace")
+ '(custom-safe-themes
+   '("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default))
  '(lsp-signature-render-documentation nil)
  '(lsp-ui-doc-alignment 'frame)
  '(lsp-ui-doc-delay 0.2)
  '(lsp-ui-doc-position 'at-point)
  '(package-selected-packages
-   '(dashboard inferior-python inferior-python-mode lsp-treemacs spacemacs-theme origami rust-mode tide js2-refactor web-mode mmm-mode vue-mode typescript-mode flycheck ripgrep lsp-python-ms rg magit yaml-mode symbol-overlay which-key window-numbering exec-path-from-shell use-package))
- '(send-mail-function 'mailclient-send-it))
+   '(company company-lsp company-quickhelp counsel diminish ein ivy js2-mode lsp-mode lsp-ui smex xquery-mode yasnippet yasnippet-snippets dracula-theme dashboard inferior-python inferior-python-mode lsp-treemacs spacemacs-theme origami rust-mode tide js2-refactor web-mode mmm-mode vue-mode typescript-mode flycheck ripgrep lsp-python-ms rg magit yaml-mode symbol-overlay which-key window-numbering exec-path-from-shell use-package))
+ '(send-mail-function 'mailclient-send-it)
+ '(treemacs-silent-refresh t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(font-lock-comment-face ((t (:foreground "light slate gray"))))
- '(fringe ((t (:background "ghost white"))))
- '(mmm-default-submode-face ((t (:background "white"))))
- '(window-divider ((t (:foreground "gray30")))))
+ )
+(put 'narrow-to-region 'disabled nil)
+(put 'erase-buffer 'disabled nil)
