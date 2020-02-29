@@ -3,6 +3,7 @@
  (magit-branch nil)
  (magit-commit nil)
  (magit-diff
+  (("--" "lsp-python-ms.el"))
   ("--no-ext-diff" "--stat")
   (("--" "data/requests/calculate-position.script"))
   (("--" "src/simulation/ranker.py"))

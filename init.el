@@ -279,14 +279,19 @@
   ;;              "jupyter")
   )
 (use-package lsp-python-ms
+  :init (setq lsp-python-ms-prefer-pyls nil)
   :hook ((python-mode . (lambda ()
                           (require 'lsp-python-ms)
                           (lsp-deferred)
-                          (flycheck-mode)
-                          (setq-local flycheck-checker 'python-flake8)))
+                          ;; (flycheck-mode)
+                          ;; (setq-local flycheck-checker 'python-flake8)
+                          ))
          (python-mode . symbol-overlay-mode)
          (python-mode . my-python-hook)
          ))
+;; (setq lsp-python-ms-prefer-pyls nil)
+;; (require 'lsp-python-ms)
+;; (add-hook 'python-mode-hook #'lsp)
 
 (defun kj/inferior-python-mode-hook ()
   (when (string-equal system-type "windows-nt")
@@ -317,7 +322,7 @@
           (setq web-mode-enable-current-column-highlight t))
   :hook ((web-mode . company-mode)
          (web-mode . (lambda ()
-                       (flycheck-mode))))
+                       (flycheck-mode -1))))
   :config
   (setq web-mode-script-padding 0
         web-mode-style-padding 0))
@@ -327,6 +332,9 @@
 (use-package vue-mode)
 
 (use-package rust-mode)
+
+(use-package js
+  :config (setq-default js-indent-level 2))
 
 (use-package lsp-mode
   :hook ((rust-mode web-mode js-mode typescript-mode) . lsp-deferred)
@@ -385,7 +393,7 @@
  '(lsp-ui-doc-delay 0.2)
  '(lsp-ui-doc-position 'at-point)
  '(package-selected-packages
-   '(company company-lsp company-quickhelp counsel diminish ein ivy js2-mode lsp-mode lsp-ui smex xquery-mode yasnippet yasnippet-snippets dracula-theme dashboard inferior-python inferior-python-mode lsp-treemacs spacemacs-theme origami rust-mode tide js2-refactor web-mode mmm-mode vue-mode typescript-mode flycheck ripgrep lsp-python-ms rg magit yaml-mode symbol-overlay which-key window-numbering exec-path-from-shell use-package))
+   '(lsp-python-ms company company-lsp company-quickhelp counsel diminish ein ivy js2-mode lsp-mode lsp-ui smex xquery-mode yasnippet yasnippet-snippets dracula-theme dashboard inferior-python inferior-python-mode lsp-treemacs spacemacs-theme origami rust-mode tide js2-refactor web-mode mmm-mode vue-mode typescript-mode flycheck ripgrep rg magit yaml-mode symbol-overlay which-key window-numbering exec-path-from-shell use-package))
  '(send-mail-function 'mailclient-send-it)
  '(treemacs-silent-refresh t))
 (custom-set-faces
