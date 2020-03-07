@@ -113,6 +113,13 @@
 (defvar xquery-mode-keywords ()
   "Keywords for xquery-mode.")
 
+;; add imenu support
+(setq xquery-imenu-generic-expression
+  '((nil "^\s*declare\s+function\s+\\([A-Za-z0-9:-]+\\)" 1)))
+(add-hook 'xquery-mode-hook
+          (lambda ()
+            (setq imenu-generic-expression xquery-imenu-generic-expression)))
+
 ;;;###autoload
 (define-derived-mode xquery-mode fundamental-mode "XQuery"
   "A major mode for W3C XQuery 1.0"
@@ -124,6 +131,7 @@
   (local-set-key "/" 'nxml-electric-slash)
   (setq tab-width xquery-mode-indent-width)
   (xquery-mode-activate-indent-style)
+  ;; (define-key map "\C-c\C-j" 'imenu)
   ;; apparently it's important to set at least an empty list up-front
   (set (make-local-variable 'font-lock-defaults) '((nil)))
   (set (make-local-variable 'comment-start) "(:")

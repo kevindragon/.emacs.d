@@ -285,13 +285,11 @@
                           (lsp-deferred)
                           ;; (flycheck-mode)
                           ;; (setq-local flycheck-checker 'python-flake8)
+                          ;; (setq lsp-prefer-flymake nil)
                           ))
          (python-mode . symbol-overlay-mode)
          (python-mode . my-python-hook)
          ))
-;; (setq lsp-python-ms-prefer-pyls nil)
-;; (require 'lsp-python-ms)
-;; (add-hook 'python-mode-hook #'lsp)
 
 (defun kj/inferior-python-mode-hook ()
   (when (string-equal system-type "windows-nt")
@@ -320,16 +318,20 @@
           (setq web-mode-css-indent-offset 2)
           (setq web-mode-code-indent-offset 2)
           (setq web-mode-enable-current-column-highlight t))
-  :hook ((web-mode . company-mode)
-         (web-mode . (lambda ()
-                       (flycheck-mode -1))))
+  :hook ((web-mode . company-mode))
   :config
+  (flycheck-mode -1)
   (setq web-mode-script-padding 0
         web-mode-style-padding 0))
 
 (use-package json-mode)
 
-(use-package vue-mode)
+(use-package vue-mode
+  :init
+  (add-hook 'mmm-mode-hook
+            (lambda ()
+              (set-face-background 'mmm-default-submode-face nil)))
+  :config (flycheck-mode -1))
 
 (use-package rust-mode)
 
@@ -337,12 +339,10 @@
   :config (setq-default js-indent-level 2))
 
 (use-package lsp-mode
-  :hook ((rust-mode web-mode js-mode typescript-mode) . lsp-deferred)
+  :hook ((rust-mode web-mode vue-mode js-mode typescript-mode) . lsp-deferred)
   :commands (lsp lsp-deferred)
   :config
-  (lsp-signature-mode -1)
-  (when (string= major-mode "python-mode")
-    (setq lsp-prefer-flymake nil)))
+  (lsp-signature-mode -1))
 (use-package company-lsp
   :init (setq company-lsp-cache-candidates 'auto))
 
@@ -393,7 +393,7 @@
  '(lsp-ui-doc-delay 0.2)
  '(lsp-ui-doc-position 'at-point)
  '(package-selected-packages
-   '(lsp-python-ms company company-lsp company-quickhelp counsel diminish ein ivy js2-mode lsp-mode lsp-ui smex xquery-mode yasnippet yasnippet-snippets dracula-theme dashboard inferior-python inferior-python-mode lsp-treemacs spacemacs-theme origami rust-mode tide js2-refactor web-mode mmm-mode vue-mode typescript-mode flycheck ripgrep rg magit yaml-mode symbol-overlay which-key window-numbering exec-path-from-shell use-package))
+   '(ein company company-lsp company-quickhelp counsel diminish ivy js2-mode lsp-mode lsp-ui smex xquery-mode yasnippet dracula-theme dashboard inferior-python inferior-python-mode lsp-treemacs origami tide js2-refactor mmm-mode vue-mode flycheck ripgrep rg magit yaml-mode symbol-overlay window-numbering use-package))
  '(send-mail-function 'mailclient-send-it)
  '(treemacs-silent-refresh t))
 (custom-set-faces
