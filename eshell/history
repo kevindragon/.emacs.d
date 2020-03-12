@@ -43,3 +43,6 @@ cd ../../
 cd ../
 cd clientui/
 npm run serve
+cd ../../
+npm run build
+npm run serve

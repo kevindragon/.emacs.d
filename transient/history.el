@@ -11,7 +11,8 @@
   (("--" "pyplay/AU/synonym.py")))
  (magit-dispatch nil)
  (magit-ediff nil)
- (magit-fetch nil)
+ (magit-fetch nil
+              ("--tags"))
  (magit-gitignore nil)
  (magit-log
   ("-n256" "--graph" "--decorate")

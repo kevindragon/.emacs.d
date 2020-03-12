@@ -243,7 +243,7 @@ Because some variables are buffer local.")
   "Formats STRING for inline rendering."
   (mapconcat (lambda (line)
                (lsp-ui-doc--inline-wrapped-line (string-trim-right line)))
-             (split-string string "[\n\v\f\r]")
+             (split-string string "[\n\v\f\r]+")
              "\n"))
 
 (defun lsp-ui-doc--extract-marked-string (marked-string &optional language)

@@ -257,12 +257,7 @@
 
 ;;; Python
 (use-package python-pytest)
-(use-package ein
-  :defer t
-  :config
-  (require 'ein)
-  (require 'ein-notebook)
-  (require 'ein-subpackages))
+(use-package ein)
 ;;; python lsp python microsoft
 (require 'pyrepl-mode)
 (defun my-python-hook ()
